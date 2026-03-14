@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Marriage Readiness Assessment</title>
+<title>Foundations — Relationship Readiness Reflection</title>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
@@ -62,6 +62,16 @@ body{background:#F7F4EF;font-family:'DM Sans',sans-serif;color:#1B1714;-webkit-f
 .mode-card{cursor:pointer;border:1.5px solid #DFD6CC;border-radius:12px;padding:20px 18px;background:#fff;transition:all .15s;text-align:left;width:100%}
 .mode-card:hover{border-color:#A85240;transform:translateY(-1px)}
 .mode-card.selected{border-color:#A85240;background:#FDF5F3}
+.acc-btn{width:100%;background:#fff;border:1.5px solid #DFD6CC;border-radius:10px;cursor:pointer;padding:14px 18px;text-align:left;display:flex;justify-content:space-between;align-items:center;transition:border-color .15s;font-family:'DM Sans',sans-serif}
+.acc-btn:hover{border-color:#b5a99e}
+.acc-btn.open{border-radius:10px 10px 0 0;border-bottom-color:transparent}
+.acc-body{background:#fff;border:1.5px solid #DFD6CC;border-top:none;border-radius:0 0 10px 10px;padding:18px 20px 20px;display:none}
+.acc-body.open{display:block}
+.divider{height:1px;background:#EEE9E3;margin:20px 0}
+.use-chip{display:inline-flex;align-items:center;gap:6px;background:#F0EBE4;border-radius:6px;padding:5px 10px;font-size:12px;color:#6B645C;font-weight:500}
+.step-row{display:flex;gap:12px;align-items:flex-start;margin-bottom:12px}
+.step-row:last-child{margin-bottom:0}
+.step-num{min-width:22px;height:22px;border-radius:50%;background:#A85240;color:#fff;font-size:11px;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
 </style>
 </head>
 <body>
@@ -133,6 +143,17 @@ let S={
 const set=p=>{S={...S,...p};render();};
 const nOf=p=>S.names[p]||(p==='A'?'Partner A':'Partner B');
 const abbr=str=>str.length>8?str.slice(0,7)+'…':str;
+
+function toggleAcc(id){
+  const body=document.getElementById('acc-'+id+'-body');
+  const chev=document.getElementById('acc-'+id+'-chev');
+  const btn=document.getElementById('acc-'+id+'-btn');
+  if(!body) return;
+  const open=body.classList.contains('open');
+  body.classList.toggle('open',!open);
+  if(btn) btn.classList.toggle('open',!open);
+  if(chev) chev.style.transform=open?'':'rotate(90deg)';
+}
 
 function updateName(partner, value){
   S.names[partner]=value;
@@ -219,31 +240,126 @@ function render(){
   /* INTRO */
   if(screen==='intro'){
     const ok=mode&&names.A.trim()&&(mode==='single'||(mode==='couple'&&names.B.trim()));
-    html=`<div class="screen" style="padding-top:60px">
-      <div style="text-align:center;margin-bottom:40px">
-        <div style="font-size:11px;letter-spacing:.16em;color:#6B645C;text-transform:uppercase;margin-bottom:14px">Relationship Assessment</div>
-        <h1 class="serif" style="font-size:52px;font-weight:400;line-height:1.1;color:#1B1714;font-style:italic;margin-bottom:14px">Are we ready?</h1>
-        <p style="font-size:15px;color:#6B645C;line-height:1.72;max-width:400px;margin:0 auto;font-weight:300">A science-informed self-assessment for couples — or for individual reflection.</p>
+    html=`<div class="screen" style="padding-top:52px">
+
+      <!-- Hero -->
+      <div style="text-align:center;margin-bottom:44px">
+        <div style="font-size:11px;letter-spacing:.18em;color:#A85240;text-transform:uppercase;margin-bottom:14px;font-weight:500">Relationship Reflection</div>
+        <h1 class="serif" style="font-size:58px;font-weight:400;line-height:1;color:#1B1714;font-style:italic;margin-bottom:16px">Foundations</h1>
+        <p style="font-size:15px;color:#6B645C;line-height:1.75;max-width:380px;margin:0 auto;font-weight:300">A science-informed reflection on the patterns that matter most for long-term partnership.</p>
       </div>
 
-      <div style="margin-bottom:26px">
-        <div style="font-size:11px;font-weight:500;color:#6B645C;letter-spacing:.09em;text-transform:uppercase;margin-bottom:12px">How are you taking this?</div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
-          <button class="mode-card${mode==='couple'?' selected':''}" onclick="set({mode:'couple'})">
-            <div style="font-size:28px;margin-bottom:10px">👫</div>
-            <div style="font-size:15px;font-weight:500;color:#1B1714;margin-bottom:5px">Together</div>
-            <div style="font-size:13px;color:#6B645C;line-height:1.5">Both partners answer independently, then compare</div>
-          </button>
-          <button class="mode-card${mode==='single'?' selected':''}" onclick="set({mode:'single'})">
-            <div style="font-size:28px;margin-bottom:10px">🪞</div>
-            <div style="font-size:15px;font-weight:500;color:#1B1714;margin-bottom:5px">Just me</div>
-            <div style="font-size:13px;color:#6B645C;line-height:1.5">Reflect on your relationship from your own perspective</div>
-          </button>
-          
+      <!-- What this is / is not -->
+      <div style="background:#fff;border:1px solid #DFD6CC;border-radius:12px;padding:20px 22px;margin-bottom:16px">
+        <div style="font-size:11px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:#6B645C;margin-bottom:14px">What this is — and isn't</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+          <div style="background:#EAF3EC;border-radius:8px;padding:12px 14px">
+            <div style="font-size:11px;font-weight:500;color:#3D6E50;text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px">It is</div>
+            ${['A reflection tool','A conversation starter','A way to surface blind spots','Based on relationship research'].map(t=>`<div style="font-size:13px;color:#2D5A3D;line-height:1.55;display:flex;gap:6px;align-items:flex-start;margin-bottom:4px"><span style="color:#3D6E50;flex-shrink:0;margin-top:1px">✓</span>${t}</div>`).join('')}
+          </div>
+          <div style="background:#FAE8E5;border-radius:8px;padding:12px 14px">
+            <div style="font-size:11px;font-weight:500;color:#A85240;text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px">It isn't</div>
+            ${['A psychological diagnosis','A pass/fail test','A substitute for counseling','A final verdict'].map(t=>`<div style="font-size:13px;color:#7A3428;line-height:1.55;display:flex;gap:6px;align-items:flex-start;margin-bottom:4px"><span style="color:#A85240;flex-shrink:0;margin-top:1px">✕</span>${t}</div>`).join('')}
+          </div>
         </div>
       </div>
 
-      <div style="margin-bottom:34px">
+      <!-- Accordions -->
+      <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:16px">
+
+        <div>
+          <button class="acc-btn" id="acc-who-btn" onclick="toggleAcc('who')">
+            <span style="font-size:14px;font-weight:500;color:#1B1714">Who is this for?</span>
+            <span id="acc-who-chev" style="color:#6B645C;font-size:18px;transition:transform .22s;display:inline-block">›</span>
+          </button>
+          <div class="acc-body" id="acc-who-body">
+            ${[
+              {icon:'💑',title:'Couples considering long-term commitment',desc:'Use it to reflect on the foundations of your relationship before making a lifelong decision.'},
+              {icon:'💍',title:'Engaged or soon-to-marry couples',desc:'Surface important conversations and identify areas to address before your formal commitment.'},
+              {icon:'🏡',title:'Married or long-term partners',desc:'Use it as a relationship check-in — not just for new couples. Relationships evolve, and so do the patterns within them.'},
+              {icon:'🪞',title:'Individuals reflecting on their own',desc:'Complete it alone to think more clearly about your relationship patterns before discussing them with your partner.'}
+            ].map((u,i)=>`<div style="${i<3?'margin-bottom:14px':''}display:flex;gap:12px;align-items:flex-start">
+              <div style="font-size:20px;flex-shrink:0;margin-top:1px">${u.icon}</div>
+              <div><div style="font-size:14px;font-weight:500;color:#1B1714;margin-bottom:3px">${u.title}</div><div style="font-size:13px;color:#6B645C;line-height:1.58">${u.desc}</div></div>
+            </div>`).join('')}
+          </div>
+        </div>
+
+        <div>
+          <button class="acc-btn" id="acc-how-btn" onclick="toggleAcc('how')">
+            <span style="font-size:14px;font-weight:500;color:#1B1714">How to use it</span>
+            <span id="acc-how-chev" style="color:#6B645C;font-size:18px;transition:transform .22s;display:inline-block">›</span>
+          </button>
+          <div class="acc-body" id="acc-how-body">
+            ${[
+              ['Answer separately','Each partner completes all 10 items privately — ideally in different rooms, without discussing answers first.'],
+              ['Rate the last 6–12 months','Score based on your typical pattern, not a single incident. 2 = doing well, 1 = some growth needed, 0 = significant concern.'],
+              ['Compare and discuss','Once both partners finish, review the results together. Pay close attention to any item where scores differ by 2 points — these gaps often reveal the most.'],
+              ['Focus on the conversation','The numbers are a starting point. The discussion that follows is where the real value lies.']
+            ].map(([t,d],i)=>`<div class="step-row">
+              <div class="step-num">${i+1}</div>
+              <div><div style="font-size:14px;font-weight:500;color:#1B1714;margin-bottom:3px">${t}</div><div style="font-size:13px;color:#6B645C;line-height:1.58">${d}</div></div>
+            </div>`).join('')}
+            <div class="divider"></div>
+            <p style="font-size:13px;color:#6B645C;line-height:1.65;margin:0">You can also complete it alone to reflect on your own perspective before sharing with your partner.</p>
+          </div>
+        </div>
+
+        <div>
+          <button class="acc-btn" id="acc-safe-btn" onclick="toggleAcc('safe')">
+            <span style="font-size:14px;font-weight:500;color:#1B1714">Safety & important note</span>
+            <span id="acc-safe-chev" style="color:#6B645C;font-size:18px;transition:transform .22s;display:inline-block">›</span>
+          </button>
+          <div class="acc-body" id="acc-safe-body">
+            <div style="background:#FAE8E5;border-radius:8px;padding:14px 16px;margin-bottom:14px">
+              <div style="font-size:12px;font-weight:500;color:#A85240;text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px">⚠ If safety is a concern</div>
+              <p style="font-size:13px;color:#7A3428;line-height:1.65;margin-bottom:8px">If your relationship involves fear, coercion, intimidation, or any form of physical or sexual aggression, your safety is the priority — not scoring the relationship.</p>
+              <p style="font-size:13px;color:#7A3428;line-height:1.65;margin:0">Please reach out to trusted people, a counselor, or a support service. The assessment will redirect you to resources if a safety concern is indicated.</p>
+            </div>
+            <p style="font-size:13px;color:#6B645C;line-height:1.65;margin:0">The results of this assessment are <strong style="font-weight:500;color:#1B1714">not stored anywhere</strong>. Everything stays in your browser for this session only.</p>
+          </div>
+        </div>
+
+        <div>
+          <button class="acc-btn" id="acc-when-btn" onclick="toggleAcc('when')">
+            <span style="font-size:14px;font-weight:500;color:#1B1714">When to use or revisit it</span>
+            <span id="acc-when-chev" style="color:#6B645C;font-size:18px;transition:transform .22s;display:inline-block">›</span>
+          </button>
+          <div class="acc-body" id="acc-when-body">
+            <p style="font-size:14px;color:#3D3832;line-height:1.72;margin-bottom:14px">Relationships change over time, and so do the patterns within them. This assessment can be useful at any of these moments:</p>
+            ${[
+              ['When considering a commitment','Before deciding to move in, get engaged, or marry.'],
+              ['During premarital preparation','As part of structured conversations before a formal commitment.'],
+              ['After a major life transition','Moving, having children, career changes, or loss can shift relationship dynamics.'],
+              ['As an annual check-in','Even strong relationships benefit from regular honest reflection.']
+            ].map(([t,d])=>`<div style="display:flex;gap:10px;align-items:flex-start;margin-bottom:10px">
+              <span style="width:6px;height:6px;border-radius:50%;background:#A85240;flex-shrink:0;margin-top:6px"></span>
+              <div><span style="font-size:14px;font-weight:500;color:#1B1714">${t} — </span><span style="font-size:14px;color:#6B645C">${d}</span></div>
+            </div>`).join('')}
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Divider -->
+      <div style="height:1px;background:#DFD6CC;margin:28px 0 26px"></div>
+
+      <!-- Mode + Names + Begin -->
+      <div style="font-size:11px;font-weight:500;color:#6B645C;letter-spacing:.09em;text-transform:uppercase;margin-bottom:12px">How are you taking this?</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:22px">
+        <button class="mode-card${mode==='couple'?' selected':''}" onclick="set({mode:'couple'})">
+          <div style="font-size:26px;margin-bottom:9px">👫</div>
+          <div style="font-size:15px;font-weight:500;color:#1B1714;margin-bottom:4px">Together</div>
+          <div style="font-size:13px;color:#6B645C;line-height:1.5">Both partners answer independently, then compare</div>
+        </button>
+        <button class="mode-card${mode==='single'?' selected':''}" onclick="set({mode:'single'})">
+          <div style="font-size:26px;margin-bottom:9px">🪞</div>
+          <div style="font-size:15px;font-weight:500;color:#1B1714;margin-bottom:4px">Just me</div>
+          <div style="font-size:13px;color:#6B645C;line-height:1.5">Reflect on your relationship from your own perspective</div>
+        </button>
+      </div>
+
+      <div style="margin-bottom:28px">
         <div style="font-size:11px;font-weight:500;color:#6B645C;letter-spacing:.09em;text-transform:uppercase;margin-bottom:12px">${mode==='single'?'Your name':'Your names'}</div>
         <div style="display:flex;flex-direction:column;gap:10px">
           <div style="position:relative">
@@ -259,7 +375,7 @@ function render(){
 
       <div style="text-align:center">
         <button id="begin-btn" class="btn-primary" style="font-size:16px;padding:15px 46px" onclick="set({screen:'questions',partner:'A',qIdx:0})" ${!ok?'disabled':''}>Begin →</button>
-        <p style="font-size:12px;color:#B4ADA6;margin-top:14px;line-height:1.6">Score 0, 1, or 2 based on the past 6–12 months.<br>Names stay in your browser — never stored anywhere.</p>
+        <p style="font-size:12px;color:#B4ADA6;margin-top:14px;line-height:1.6">Score 0, 1, or 2 · Based on the past 6–12 months · Nothing is stored</p>
       </div>
     </div>`;
   }
