@@ -53,7 +53,6 @@ body{background:#F7F4EF;font-family:'DM Sans',sans-serif;color:#1B1714;-webkit-f
 @keyframes spin{to{transform:rotate(360deg)}}
 .tag-key{font-size:10px;background:#EEE9E3;color:#6B645C;padding:1px 5px;border-radius:3px;margin-left:6px;vertical-align:middle}
 .gate-warn{background:#FAE8E5;border:1px solid #c87060;border-radius:8px;padding:10px 14px;margin-bottom:18px;font-size:12px;color:#A85240}
-.totals{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:30px}
 .total-card{background:#fff;border:1px solid #DFD6CC;border-radius:10px;padding:16px;text-align:center}
 .partner-dot{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:10px;font-weight:600;flex-shrink:0;letter-spacing:0}
 .name-input{width:100%;padding:13px 16px;border:1.5px solid #DFD6CC;border-radius:10px;font-family:'DM Sans',sans-serif;font-size:16px;color:#1B1714;background:#fff;outline:none;transition:border-color .15s}
@@ -68,67 +67,152 @@ body{background:#F7F4EF;font-family:'DM Sans',sans-serif;color:#1B1714;-webkit-f
 .acc-body{background:#fff;border:1.5px solid #DFD6CC;border-top:none;border-radius:0 0 10px 10px;padding:18px 20px 20px;display:none}
 .acc-body.open{display:block}
 .divider{height:1px;background:#EEE9E3;margin:20px 0}
-.use-chip{display:inline-flex;align-items:center;gap:6px;background:#F0EBE4;border-radius:6px;padding:5px 10px;font-size:12px;color:#6B645C;font-weight:500}
 .step-row{display:flex;gap:12px;align-items:flex-start;margin-bottom:12px}
 .step-row:last-child{margin-bottom:0}
 .step-num{min-width:22px;height:22px;border-radius:50%;background:#A85240;color:#fff;font-size:11px;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.ref-pill{display:inline-flex;align-items:center;gap:4px;background:#EEE9E3;border-radius:4px;padding:3px 8px;font-size:11px;color:#6B645C;text-decoration:none;transition:background .12s;margin:2px 3px 2px 0;line-height:1.4}
+.ref-pill:hover{background:#DFD6CC;color:#1B1714}
+.ref-block{margin-top:14px;padding-top:12px;border-top:1px solid #EEE9E3}
+.score-band{display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:8px;margin-bottom:8px}
 </style>
 </head>
 <body>
 <div class="app"><div class="wrap" id="root"></div></div>
 <script>
+const REFS = {
+  cdc:     {label:'CDC: Intimate Partner Violence', url:'https://www.cdc.gov/intimate-partner-violence/about/index.html'},
+  lohmann: {label:'Lohmann et al., 2023', url:'https://pmc.ncbi.nlm.nih.gov/articles/PMC10666508/'},
+  stanley: {label:'Stanley et al., 2010', url:'https://pmc.ncbi.nlm.nih.gov/articles/PMC3039217/'},
+  owen:    {label:'Owen et al., 2013', url:'https://pmc.ncbi.nlm.nih.gov/articles/PMC3656416/'},
+  johnson: {label:'Johnson et al., 2021', url:'https://pmc.ncbi.nlm.nih.gov/articles/PMC8915221/'},
+  salvatore:{label:'Salvatore et al., 2011', url:'https://pmc.ncbi.nlm.nih.gov/articles/PMC3060296/'},
+  ha:      {label:'Ha et al., 2013', url:'https://pmc.ncbi.nlm.nih.gov/articles/PMC3629130/'},
+  haase:   {label:'Haase, 2023', url:'https://pmc.ncbi.nlm.nih.gov/articles/PMC11210602/'},
+  yilmaz:  {label:'Yılmaz et al., 2023', url:'https://pmc.ncbi.nlm.nih.gov/articles/PMC10651749/'},
+  dew:     {label:'Dew & Saxey, 2022', url:'https://pmc.ncbi.nlm.nih.gov/articles/PMC9722948/'},
+  peetz:   {label:'Peetz et al., 2023', url:'https://pmc.ncbi.nlm.nih.gov/articles/PMC10632137/'},
+  bogdan:  {label:'Bogdan et al., 2022 (meta-analysis)', url:'https://pmc.ncbi.nlm.nih.gov/articles/PMC9350520/'},
+  vanderwal:{label:'van der Wal et al., 2023', url:'https://pmc.ncbi.nlm.nih.gov/articles/PMC11143760/'},
+  falconier:{label:'Falconier et al., 2015 (meta-analysis)', url:'https://pubmed.ncbi.nlm.nih.gov/26295276/'},
+  rusu:    {label:'Rusu et al., 2020', url:'https://pmc.ncbi.nlm.nih.gov/articles/PMC7145192/'},
+  newkirk: {label:'Newkirk et al., 2017', url:'https://pmc.ncbi.nlm.nih.gov/articles/PMC5365149/'},
+  aviv:    {label:'Aviv et al., 2024', url:'https://pmc.ncbi.nlm.nih.gov/articles/PMC11761833/'},
+  ciciolla:{label:'Ciciolla & Luthar, 2019', url:'https://pmc.ncbi.nlm.nih.gov/articles/PMC8223758/'},
+  mallory: {label:'Mallory, 2022 (meta-analysis)', url:'https://pubmed.ncbi.nlm.nih.gov/34968095/'},
+  lebow:   {label:'Lebow et al., 2022', url:'https://pmc.ncbi.nlm.nih.gov/articles/PMC10087549/'},
+  megale:  {label:'Megale et al., 2021', url:'https://pmc.ncbi.nlm.nih.gov/articles/PMC8127847/'},
+  carroll: {label:'Carroll & Doherty, 2003', url:'https://scholarsarchive.byu.edu/facpub/4333/'},
+};
+
 const Q=[
-  {id:1,gate:true,hw:true,title:"Safety, respect & autonomy",
-   thesis:"A relationship cannot be marriage-ready while one partner is managing fear, coercive control, or aggression.",
-   opts:{2:"No fear-based behavior. No intimidation, threats, sexual pressure, surveillance, financial control, or physical aggression. Boundaries and \"no\" are respected.",
-        1:"No pattern of fear or control, but occasional disrespectful moments or boundary slips that are acknowledged, repaired, and decreasing.",
-        0:"Any current pattern of intimidation, coercion, fear, sexual pressure, stalking/surveillance, financial control, or physical aggression."}},
-  {id:2,hw:true,title:"Clear, mutual commitment",
-   thesis:"The key is dedication — an intrinsic desire to build a future together, not just constraints that make leaving harder.",
-   opts:{2:"Both of us clearly choose marriage for positive, shared reasons and can explain why now. We are not using marriage to fix major problems.",
-        1:"Both lean toward marriage, but reasons are partly vague, externally driven, or ahead of full clarity.",
-        0:"One partner is substantially unsure, or marriage is being used to fix trust/compatibility problems, avoid a breakup, or satisfy external pressure."}},
-  {id:3,title:"Conflict skills & repair",
-   thesis:"Conflict itself is normal. The question is whether disagreements become destructive and whether the couple can recover.",
-   opts:{2:"Disagreements stay specific and respectful. No contempt, humiliation, or character attacks. We apologize, repair, and return to warmth.",
-        1:"We sometimes escalate, pursue/withdraw, or avoid, but repair is reliable and our fights lead to learning.",
-        0:"Conflicts regularly become cruel, contemptuous, silent-punitive, explosive, or circular with no real repair."}},
-  {id:4,title:"Emotion regulation under stress",
-   thesis:"When partners get emotionally flooded, listening and problem-solving break down. Regulation is a shared process.",
-   opts:{2:"We notice when we are flooded, call a respectful pause, self-soothe, and come back to the conversation.",
-        1:"Stress can trigger shutdown, defensiveness, or anger, but with effort we recover and prevent lasting damage.",
-        0:"Stress routinely leads to outbursts, contempt, cold withdrawal, or rupture that lingers and spreads."}},
-  {id:5,hw:true,title:"Trustworthiness & transparency",
-   thesis:"Trust is foundational. Lack of it is associated with lying and lower relationship quality across all domains.",
-   opts:{2:"We are honest about finances, outside relationships, digital boundaries, priorities, and loyalties. Transparency is voluntary, not surveillance.",
-        1:"There are sensitive spots or past secrecy, but both are actively rebuilding trust with concrete follow-through.",
-        0:"Repeated lying, hidden debt, covert contact, betrayal, or chronic suspicion is a current theme."}},
-  {id:6,hw:true,title:"Alignment on non-negotiables",
-   thesis:"Unresolved incompatibilities in high-stakes life domains keep producing the same fight and predict later problems.",
-   opts:{2:"We have explicit, workable agreements on children, money, values/religion, career/location, family boundaries, and lifestyle.",
-        1:"We agree on some, but at least one major domain is still vague, avoided, or overly idealized.",
-        0:"There is a major unresolved incompatibility, or one or both of us refuses to decide."}},
-  {id:7,title:"Team coping: us vs. the problem",
-   thesis:"Couples do better when stress becomes a shared task rather than evidence that the partner is the problem.",
-   opts:{2:"When life gets hard, we share stress clearly, ask directly for help, and coordinate rather than blame.",
-        1:"Stress sometimes makes us adversarial, but we can reset and cooperate.",
-        0:"Stress routinely turns into blame, scorekeeping, isolation, or sabotage."}},
-  {id:8,title:"Fairness in visible & invisible labor",
-   thesis:"The question is perceived fairness in both visible work and the invisible mental load — not perfect 50/50.",
-   opts:{2:"Chores, admin, planning, remembering, and emotional labor feel fair enough to both of us, and we renegotiate when life changes.",
-        1:"There is a noticeable imbalance, but it is named and actively being rebalanced.",
-        0:"One partner chronically carries the load and feels unseen, resentful, or dismissed."}},
-  {id:9,gate:true,hw:true,title:"Sexual respect, consent & intimacy",
-   thesis:"Strong couples are not perfectly matched in desire; they can talk safely about consent, boundaries, and differences.",
-   opts:{2:"We can talk openly and respectfully about sex, consent, desire differences, boundaries, health, and what helps intimacy.",
-        1:"The topic is awkward or intermittent, but we can communicate when it matters.",
-        0:"Sex involves fear, shame, coercion, chronic avoidance, ignored pain, or inability to say no safely."}},
-  {id:10,title:"Learning & help-seeking",
-   thesis:"Relationship skills are learnable. Openness to tools and support is a resilience factor, not a weakness.",
-   opts:{2:"We can take feedback, own our part, use tools, and seek support before a crisis.",
-        1:"We are somewhat open, but defensiveness or delay in help-seeking gets in the way.",
-        0:"One or both of us rejects feedback, blames only the other, or refuses any tools or support."}}
+  {id:1,gate:true,hw:true,
+   title:"Safety, respect & autonomy",
+   subtitle:"Non-negotiable",
+   thesis:"Readiness begins with safety. Intimate partner violence includes psychological aggression, coercive control, stalking, sexual coercion, and physical violence — all associated with PTSD, depression, and long-term trauma.",
+   refs:['cdc','lohmann'],
+   opts:{
+     2:"We consistently treat each other with respect. No intimidation, threats, coercion, surveillance, sexual pressure, or physical aggression. Boundaries and 'no' are always honored.",
+     1:"Mostly respectful, with occasional hurtful escalations or boundary slips that are acknowledged, repaired, and becoming less frequent.",
+     0:"Any current pattern of fear, control, threats, sexual pressure, physical aggression, or coercion — regardless of how infrequent."
+   }},
+  {id:2,hw:true,
+   title:"Clear, mutual commitment",
+   subtitle:"Choice, not inertia",
+   thesis:"Readiness is stronger when marriage is a shared, deliberate decision rather than something a couple slides into. Research distinguishes dedication — an intrinsic desire to build a future together — from mere constraints that make leaving harder. Sliding through major transitions without a real decision is linked to lower relationship quality.",
+   refs:['stanley','owen'],
+   opts:{
+     2:"We both clearly want this commitment and can articulate why. We are choosing it freely, not using it to fix major problems or relieve external pressure.",
+     1:"We both lean toward commitment, but some reasons are vague, externally driven, or not fully clarified between us.",
+     0:"One partner is significantly unsure, or commitment is being treated as a rescue plan, an exit from conflict, or a response to outside pressure."
+   }},
+  {id:3,
+   title:"Conflict skills & repair",
+   subtitle:"How we fight and recover",
+   thesis:"The issue is not whether you fight — conflict is normal — but whether it stays respectful and whether you can recover afterward. Lower negative communication is consistently linked with higher satisfaction, and the ability to repair after conflict predicts long-term relationship stability.",
+   refs:['johnson','salvatore','ha'],
+   opts:{
+     2:"We can disagree without insults, contempt, humiliation, or character attacks. We apologize, de-escalate, and reconnect after conflict.",
+     1:"We sometimes fight poorly or avoid conflict, but repair usually happens and we learn from difficult conversations.",
+     0:"Conflict regularly becomes cruel, contemptuous, explosive, shut-down, or circular — with no real resolution or reconnection."
+   }},
+  {id:4,
+   title:"Emotion regulation under stress",
+   subtitle:"Managing flooding in the moment",
+   thesis:"When emotionally flooded, empathy and problem-solving both drop sharply. In couples, emotion regulation is a dyadic process — readiness means being able to pause, self-soothe, and return to conversation without causing lasting damage.",
+   refs:['haase'],
+   opts:{
+     2:"When stressed or flooded, we can pause, self-soothe, and return to the conversation respectfully — even if it takes time.",
+     1:"Stress sometimes triggers shutdown, defensiveness, or anger, but we can recover with effort and prevent lasting damage.",
+     0:"Stress routinely leads to outbursts, cold withdrawal, disrespect, or ruptures we don't fully repair."
+   }},
+  {id:5,hw:true,
+   title:"Trust & transparency",
+   subtitle:"Especially money, contacts & boundaries",
+   thesis:"Trust depends on predictable honesty and follow-through across all domains. It is foundational to stable relationships, and deception around finances or outside relationships is independently linked to poorer relationship functioning and lower satisfaction.",
+   refs:['yilmaz','dew'],
+   opts:{
+     2:"No significant secrets. We are honest about money, boundaries, outside relationships, priorities, and loyalties. Trust feels stable and mutual.",
+     1:"There are sensitive spots or past secrecy, but we are actively rebuilding trust with concrete, consistent follow-through.",
+     0:"Repeated lying, hidden debt, covert contact, ongoing betrayal, or chronic suspicion is a current theme in the relationship."
+   }},
+  {id:6,hw:true,
+   title:"Alignment on the 'big rocks'",
+   subtitle:"Children, finances, values, location, family, lifestyle",
+   thesis:"High-stakes domains matter because they generate recurring, hard-to-compromise conflict. Financial disagreements predict later divorce; the transition to parenthood typically lowers marital satisfaction even in good relationships; and value similarity supports both attraction and long-term functioning.",
+   refs:['peetz','bogdan','vanderwal'],
+   opts:{
+     2:"We have discussed the major life domains and reached compatible answers or genuine, workable compromises — not just postponed decisions.",
+     1:"We agree on some areas, but others are unclear, avoided, or built on idealized assumptions we haven't tested.",
+     0:"There is a significant unresolved incompatibility in at least one major domain, or one or both of us avoids the conversation."
+   }},
+  {id:7,
+   title:"Team coping",
+   subtitle:"Us versus the problem",
+   thesis:"Couples do better when external stress becomes a shared task rather than evidence that the partner is the problem. Positive dyadic coping — especially supportive and coordinated coping — is strongly and consistently linked to relationship satisfaction.",
+   refs:['falconier','rusu'],
+   opts:{
+     2:"When life gets hard, we turn toward each other, coordinate, support, and solve together — rather than turning against each other.",
+     1:"Under stress we sometimes become adversarial or withdraw, but we can reset and cooperate when we notice the pattern.",
+     0:"Under stress, blame, scorekeeping, isolation, or mutual undermining becomes our default."
+   }},
+  {id:8,
+   title:"Fair division of labor & mental load",
+   subtitle:"Visible and invisible work",
+   thesis:"Fairness matters in both visible chores and the invisible planning work (tracking, anticipating, organizing). Perceived unfairness in household labor is linked to more relationship conflict, and unequal cognitive labor is independently associated with poorer relationship functioning and worse mental health for the partner carrying it.",
+   refs:['newkirk','aviv','ciciolla'],
+   opts:{
+     2:"Chores, admin, planning, remembering, and emotional labor feel fair enough to both of us — and we renegotiate when life changes.",
+     1:"Some imbalance exists, but both partners acknowledge it and are actively working to rebalance.",
+     0:"One partner consistently carries the visible or invisible load and feels unseen, resentful, or dismissed when raising it."
+   }},
+  {id:9,gate:true,hw:true,
+   title:"Sexual communication & intimacy",
+   subtitle:"Safety and openness to talk",
+   thesis:"Sexual readiness is less about 'perfect chemistry' and more about the ability to talk safely about consent, desire differences, pain, contraception, health, and preferences. Better sexual communication is reliably associated with both relationship satisfaction and sexual satisfaction across multiple meta-analyses.",
+   refs:['mallory'],
+   opts:{
+     2:"We can talk openly and respectfully about sex — including consent, desire differences, boundaries, contraception, pain, and preferences.",
+     1:"The topic is awkward or avoided at times, but we can communicate when it genuinely matters.",
+     0:"Sex involves fear, shame, coercion, consistently ignored pain, or an inability to discuss it safely."
+   }},
+  {id:10,
+   title:"Growth mindset & help-seeking",
+   subtitle:"Openness to learning and support",
+   thesis:"Relationship skills are learnable. Couple therapy and structured relationship education can meaningfully improve distress, communication, and mutual support — which means openness to learning and help-seeking is a genuine resilience factor, not a sign of weakness.",
+   refs:['lebow','megale','carroll'],
+   opts:{
+     2:"We believe relationship skills can be learned. We are open to feedback, self-improvement tools, and professional support if needed — before a crisis, not only during one.",
+     1:"We are willing to try some self-help approaches, but support-seeking is inconsistent or meets resistance from one partner.",
+     0:"One or both of us refuses feedback, consistently blames only the other, or rejects any tools or support outright."
+   }},
 ];
+
+function refPills(keys){
+  return keys.map(k=>{
+    const r=REFS[k];
+    return `<a class="ref-pill" href="${r.url}" target="_blank" rel="noopener">↗ ${r.label}</a>`;
+  }).join('');
+}
 
 const SC={2:{cls:'b2',label:'Doing well',selCls:'sel-2'},1:{cls:'b1',label:'Some growth needed',selCls:'sel-1'},0:{cls:'b0',label:'Significant concern',selCls:'sel-0'}};
 const PC={A:'#3B7A7C',B:'#6A55A0'};
@@ -148,16 +232,15 @@ function toggleAcc(id){
   const body=document.getElementById('acc-'+id+'-body');
   const chev=document.getElementById('acc-'+id+'-chev');
   const btn=document.getElementById('acc-'+id+'-btn');
-  if(!body) return;
+  if(!body)return;
   const open=body.classList.contains('open');
   body.classList.toggle('open',!open);
-  if(btn) btn.classList.toggle('open',!open);
-  if(chev) chev.style.transform=open?'':'rotate(90deg)';
+  if(btn)btn.classList.toggle('open',!open);
+  if(chev)chev.style.transform=open?'':'rotate(90deg)';
 }
 
-function updateName(partner, value){
+function updateName(partner,value){
   S.names[partner]=value;
-  // update button state without re-rendering the whole screen
   const btn=document.getElementById('begin-btn');
   if(btn){
     const ok=S.mode&&S.names.A.trim()&&(S.mode==='single'||(S.mode==='couple'&&S.names.B.trim()));
@@ -168,20 +251,28 @@ function updateName(partner, value){
 function setScore(v){const s=JSON.parse(JSON.stringify(S.scores));s[S.partner][S.qIdx]=v;set({scores:s});}
 
 function goNext(){
-  if(S.qIdx<9){set({qIdx:S.qIdx+1});}
-  else if(S.mode==='couple'&&S.partner==='A'){set({partner:'B',qIdx:0});}
-  else{set({screen:'review'});}
+  if(S.qIdx<9)set({qIdx:S.qIdx+1});
+  else if(S.mode==='couple'&&S.partner==='A')set({partner:'B',qIdx:0});
+  else set({screen:'review'});
 }
 function goPrev(){
-  if(S.qIdx>0){set({qIdx:S.qIdx-1});}
-  else if(S.mode==='couple'&&S.partner==='B'){set({partner:'A',qIdx:9});}
-  else{set({screen:'intro'});}
+  if(S.qIdx>0)set({qIdx:S.qIdx-1});
+  else if(S.mode==='couple'&&S.partner==='B')set({partner:'A',qIdx:9});
+  else set({screen:'intro'});
 }
 function hasSafetyFlag(){
   return S.scores.A[0]===0||S.scores.A[8]===0||(S.mode==='couple'&&(S.scores.B[0]===0||S.scores.B[8]===0));
 }
 function restart(){
   set({screen:'intro',mode:null,names:{A:'',B:''},scores:{A:Array(10).fill(null),B:Array(10).fill(null)},partner:'A',qIdx:0,result:null,loading:false,error:null});
+}
+
+function scoreBand(total,hasZeroFlag){
+  if(hasZeroFlag) return {label:'Address safety or critical gaps first',color:'#A85240',bg:'#FAE8E5'};
+  if(total>=17) return {label:'Strong readiness profile',color:'#3D6E50',bg:'#EAF3EC'};
+  if(total>=13) return {label:'Potentially ready — some areas to strengthen',color:'#7C5E1A',bg:'#FBF5E6'};
+  if(total>=9)  return {label:'Meaningful vulnerabilities present',color:'#8B6A1A',bg:'#FBF5E6'};
+  return {label:'Low readiness — significant work needed',color:'#A85240',bg:'#FAE8E5'};
 }
 
 async function analyze(){
@@ -191,24 +282,24 @@ async function analyze(){
   let prompt;
   if(S.mode==='couple'){
     const rows=Q.map((q,i)=>`Item ${q.id} (${q.title}): ${nA}=${S.scores.A[i]}, ${nB}=${S.scores.B[i]}${q.hw?' [high-weight]':''}${q.gate?' [gatekeeper]':''}`).join('\n');
-    prompt=`You are a compassionate, science-informed relationship counselor. Two partners named ${nA} and ${nB} independently completed a marriage readiness assessment (0=significant concern, 1=some growth needed, 2=doing well).
+    prompt=`You are a compassionate, science-informed relationship counselor. Two partners named ${nA} and ${nB} independently completed a relationship readiness reflection (0=significant concern, 1=some growth needed, 2=doing well).
 
 Results:
 ${rows}
 
 Return ONLY valid JSON, no markdown, no code fences:
-{"overview":"2-3 honest sentences on overall readiness, addressing them by name","flags":[{"item":"Item N: title","concern":"1-2 sentences"}],"strengths":["sentence using names"],"growthAreas":[{"area":"short label","advice":"2-3 actionable sentences"}],"closing":"1-2 warm sentences to both ${nA} and ${nB}"}
+{"overview":"2-3 honest sentences on the overall picture, addressing them by name","flags":[{"item":"Item N: title","concern":"1-2 sentences"}],"strengths":["sentence using their names"],"growthAreas":[{"area":"short label","advice":"2-3 actionable sentences"}],"closing":"1-2 warm sentences to both ${nA} and ${nB}"}
 
-Rules: use ${nA} and ${nB} by name throughout. Flags only for score 0, both at 1 on high-weight, or discrepancy ≥2. Note discrepancies. 2-4 strengths, 2-4 growth areas. Warm and concrete, never preachy.`;
+Rules: use ${nA} and ${nB} by name. Flags only for score 0, both at 1 on high-weight items, or partner discrepancy ≥2. Note discrepancies. 2-4 strengths, 2-4 growth areas. Warm, concrete, never preachy. These cutoff scores are pragmatic, not clinical norms.`;
   } else {
     const rows=Q.map((q,i)=>`Item ${q.id} (${q.title}): ${nA}=${S.scores.A[i]}${q.hw?' [high-weight]':''}${q.gate?' [gatekeeper]':''}`).join('\n');
-    prompt=`You are a compassionate, science-informed relationship counselor. A person named ${nA} reflected on their relationship from their own perspective using a marriage readiness self-assessment (0=significant concern, 1=some growth needed, 2=doing well).
+    prompt=`You are a compassionate, science-informed relationship counselor. A person named ${nA} reflected on their relationship from their own perspective (0=significant concern, 1=some growth needed, 2=doing well).
 
 Results:
 ${rows}
 
 Return ONLY valid JSON, no markdown, no code fences:
-{"overview":"2-3 honest sentences on what ${nA}'s scores reveal about how they see the relationship","flags":[{"item":"Item N: title","concern":"1-2 sentences framed for one person's perspective"}],"strengths":["sentence addressing ${nA} directly"],"growthAreas":[{"area":"short label","advice":"2-3 sentences framed personally for ${nA}"}],"closing":"1-2 warm sentences to ${nA} acknowledging the self-awareness this takes"}
+{"overview":"2-3 honest sentences on what ${nA}'s scores reveal","flags":[{"item":"Item N: title","concern":"1-2 sentences, framed for one person's view"}],"strengths":["sentence addressing ${nA} directly"],"growthAreas":[{"area":"short label","advice":"2-3 sentences for ${nA} personally"}],"closing":"1-2 warm sentences to ${nA}"}
 
 Rules: use ${nA} by name. Flags for score 0 or 1 on high-weight items. 2-4 strengths, 2-4 growth areas. Warm, concrete, never preachy.`;
   }
@@ -237,36 +328,31 @@ function render(){
   const prog=(step/steps)*100;
   let html='';
 
-  /* INTRO */
+  /* ── INTRO ── */
   if(screen==='intro'){
     const ok=mode&&names.A.trim()&&(mode==='single'||(mode==='couple'&&names.B.trim()));
     html=`<div class="screen" style="padding-top:52px">
-
-      <!-- Hero -->
       <div style="text-align:center;margin-bottom:44px">
         <div style="font-size:11px;letter-spacing:.18em;color:#A85240;text-transform:uppercase;margin-bottom:14px;font-weight:500">Relationship Reflection</div>
         <h1 class="serif" style="font-size:58px;font-weight:400;line-height:1;color:#1B1714;font-style:italic;margin-bottom:16px">Foundations</h1>
         <p style="font-size:15px;color:#6B645C;line-height:1.75;max-width:380px;margin:0 auto;font-weight:300">A science-informed reflection on the patterns that matter most for long-term partnership.</p>
       </div>
 
-      <!-- What this is / is not -->
       <div style="background:#fff;border:1px solid #DFD6CC;border-radius:12px;padding:20px 22px;margin-bottom:16px">
         <div style="font-size:11px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:#6B645C;margin-bottom:14px">What this is — and isn't</div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
           <div style="background:#EAF3EC;border-radius:8px;padding:12px 14px">
             <div style="font-size:11px;font-weight:500;color:#3D6E50;text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px">It is</div>
-            ${['A reflection tool','A conversation starter','A way to surface blind spots','Based on relationship research'].map(t=>`<div style="font-size:13px;color:#2D5A3D;line-height:1.55;display:flex;gap:6px;align-items:flex-start;margin-bottom:4px"><span style="color:#3D6E50;flex-shrink:0;margin-top:1px">✓</span>${t}</div>`).join('')}
+            ${['A reflection tool','A conversation starter','A way to surface blind spots','Based on peer-reviewed research'].map(t=>`<div style="font-size:13px;color:#2D5A3D;line-height:1.55;display:flex;gap:6px;align-items:flex-start;margin-bottom:4px"><span style="color:#3D6E50;flex-shrink:0;margin-top:1px">✓</span>${t}</div>`).join('')}
           </div>
           <div style="background:#FAE8E5;border-radius:8px;padding:12px 14px">
             <div style="font-size:11px;font-weight:500;color:#A85240;text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px">It isn't</div>
-            ${['A psychological diagnosis','A pass/fail test','A substitute for counseling','A final verdict'].map(t=>`<div style="font-size:13px;color:#7A3428;line-height:1.55;display:flex;gap:6px;align-items:flex-start;margin-bottom:4px"><span style="color:#A85240;flex-shrink:0;margin-top:1px">✕</span>${t}</div>`).join('')}
+            ${['A psychological diagnosis','A pass/fail test','A substitute for counseling','A final verdict on any relationship'].map(t=>`<div style="font-size:13px;color:#7A3428;line-height:1.55;display:flex;gap:6px;align-items:flex-start;margin-bottom:4px"><span style="color:#A85240;flex-shrink:0;margin-top:1px">✕</span>${t}</div>`).join('')}
           </div>
         </div>
       </div>
 
-      <!-- Accordions -->
       <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:16px">
-
         <div>
           <button class="acc-btn" id="acc-who-btn" onclick="toggleAcc('who')">
             <span style="font-size:14px;font-weight:500;color:#1B1714">Who is this for?</span>
@@ -274,11 +360,11 @@ function render(){
           </button>
           <div class="acc-body" id="acc-who-body">
             ${[
-              {icon:'💑',title:'Couples considering long-term commitment',desc:'Use it to reflect on the foundations of your relationship before making a lifelong decision.'},
+              {icon:'💑',title:'Couples considering long-term commitment',desc:'Reflect on the foundations before making a lifelong decision.'},
               {icon:'💍',title:'Engaged or soon-to-marry couples',desc:'Surface important conversations and identify areas to address before your formal commitment.'},
-              {icon:'🏡',title:'Married or long-term partners',desc:'Use it as a relationship check-in — not just for new couples. Relationships evolve, and so do the patterns within them.'},
-              {icon:'🪞',title:'Individuals reflecting on their own',desc:'Complete it alone to think more clearly about your relationship patterns before discussing them with your partner.'}
-            ].map((u,i)=>`<div style="${i<3?'margin-bottom:14px':''}display:flex;gap:12px;align-items:flex-start">
+              {icon:'🏡',title:'Married or long-term partners',desc:'Use as a relationship check-in. Patterns shift over time — even strong relationships benefit from honest reflection.'},
+              {icon:'🪞',title:'Individuals reflecting alone',desc:'Complete it to think more clearly about your relationship patterns before discussing with your partner.'}
+            ].map((u,i)=>`<div style="${i<3?'margin-bottom:14px;':''}display:flex;gap:12px;align-items:flex-start">
               <div style="font-size:20px;flex-shrink:0;margin-top:1px">${u.icon}</div>
               <div><div style="font-size:14px;font-weight:500;color:#1B1714;margin-bottom:3px">${u.title}</div><div style="font-size:13px;color:#6B645C;line-height:1.58">${u.desc}</div></div>
             </div>`).join('')}
@@ -293,15 +379,27 @@ function render(){
           <div class="acc-body" id="acc-how-body">
             ${[
               ['Answer separately','Each partner completes all 10 items privately — ideally in different rooms, without discussing answers first.'],
-              ['Rate the last 6–12 months','Score based on your typical pattern, not a single incident. 2 = doing well, 1 = some growth needed, 0 = significant concern.'],
-              ['Compare and discuss','Once both partners finish, review the results together. Pay close attention to any item where scores differ by 2 points — these gaps often reveal the most.'],
-              ['Focus on the conversation','The numbers are a starting point. The discussion that follows is where the real value lies.']
+              ['Rate the last 6–12 months','Score your typical pattern, not a single incident. 2 = doing well, 1 = some growth needed, 0 = significant concern.'],
+              ['Pay attention to the score profile','Any 0 on Item 1 or Item 9 means address safety first, before treating the total as meaningful. Any 0 on Items 2, 5, or 6 should not be overridden by a high total.'],
+              ['Compare and discuss','Look at where scores differ by 2+ points — these gaps often reveal the most. Focus on what concrete change would move each 1 to a 2.']
             ].map(([t,d],i)=>`<div class="step-row">
               <div class="step-num">${i+1}</div>
               <div><div style="font-size:14px;font-weight:500;color:#1B1714;margin-bottom:3px">${t}</div><div style="font-size:13px;color:#6B645C;line-height:1.58">${d}</div></div>
             </div>`).join('')}
             <div class="divider"></div>
-            <p style="font-size:13px;color:#6B645C;line-height:1.65;margin:0">You can also complete it alone to reflect on your own perspective before sharing with your partner.</p>
+            <div style="background:#EEE9E3;border-radius:8px;padding:12px 14px">
+              <div style="font-size:11px;font-weight:500;color:#6B645C;text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px">Score interpretation</div>
+              ${[
+                {range:'17–20',label:'Strong readiness profile',color:'#3D6E50',bg:'#EAF3EC'},
+                {range:'13–16',label:'Potentially ready — some areas to strengthen',color:'#7C5E1A',bg:'#FBF5E6'},
+                {range:'9–12', label:'Meaningful vulnerabilities present',color:'#8B6A1A',bg:'#FBF5E6'},
+                {range:'0–8',  label:'Significant work needed first',color:'#A85240',bg:'#FAE8E5'},
+              ].map(b=>`<div style="display:flex;align-items:center;gap:10px;margin-bottom:7px">
+                <div style="min-width:40px;font-size:12px;font-weight:500;color:#1B1714;font-family:'Cormorant Garamond',serif">${b.range}</div>
+                <div style="font-size:12px;color:${b.color};background:${b.bg};padding:3px 8px;border-radius:4px">${b.label}</div>
+              </div>`).join('')}
+              <p style="font-size:11px;color:#aaa;margin-top:8px;line-height:1.5">These bands are pragmatic guides, not validated clinical norms. Always read the profile before the total.</p>
+            </div>
           </div>
         </div>
 
@@ -314,9 +412,9 @@ function render(){
             <div style="background:#FAE8E5;border-radius:8px;padding:14px 16px;margin-bottom:14px">
               <div style="font-size:12px;font-weight:500;color:#A85240;text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px">⚠ If safety is a concern</div>
               <p style="font-size:13px;color:#7A3428;line-height:1.65;margin-bottom:8px">If your relationship involves fear, coercion, intimidation, or any form of physical or sexual aggression, your safety is the priority — not scoring the relationship.</p>
-              <p style="font-size:13px;color:#7A3428;line-height:1.65;margin:0">Please reach out to trusted people, a counselor, or a support service. The assessment will redirect you to resources if a safety concern is indicated.</p>
+              <p style="font-size:13px;color:#7A3428;line-height:1.65;margin:0">The assessment will redirect you to resources if a safety concern is indicated on Items 1 or 9.</p>
             </div>
-            <p style="font-size:13px;color:#6B645C;line-height:1.65;margin:0">The results of this assessment are <strong style="font-weight:500;color:#1B1714">not stored anywhere</strong>. Everything stays in your browser for this session only.</p>
+            <p style="font-size:13px;color:#6B645C;line-height:1.65;margin:0">Everything stays in your browser for this session only. <strong style="font-weight:500;color:#1B1714">Nothing is stored or transmitted</strong> beyond the AI analysis call at the end.</p>
           </div>
         </div>
 
@@ -326,12 +424,11 @@ function render(){
             <span id="acc-when-chev" style="color:#6B645C;font-size:18px;transition:transform .22s;display:inline-block">›</span>
           </button>
           <div class="acc-body" id="acc-when-body">
-            <p style="font-size:14px;color:#3D3832;line-height:1.72;margin-bottom:14px">Relationships change over time, and so do the patterns within them. This assessment can be useful at any of these moments:</p>
             ${[
-              ['When considering a commitment','Before deciding to move in, get engaged, or marry.'],
+              ['Before a commitment','When deciding to move in, get engaged, or marry.'],
               ['During premarital preparation','As part of structured conversations before a formal commitment.'],
-              ['After a major life transition','Moving, having children, career changes, or loss can shift relationship dynamics.'],
-              ['As an annual check-in','Even strong relationships benefit from regular honest reflection.']
+              ['After a major life change','Moving, having children, career changes, or loss can shift relationship dynamics significantly.'],
+              ['As an annual check-in','Even strong relationships benefit from regular honest reflection.'],
             ].map(([t,d])=>`<div style="display:flex;gap:10px;align-items:flex-start;margin-bottom:10px">
               <span style="width:6px;height:6px;border-radius:50%;background:#A85240;flex-shrink:0;margin-top:6px"></span>
               <div><span style="font-size:14px;font-weight:500;color:#1B1714">${t} — </span><span style="font-size:14px;color:#6B645C">${d}</span></div>
@@ -339,12 +436,22 @@ function render(){
           </div>
         </div>
 
+        <div>
+          <button class="acc-btn" id="acc-refs-btn" onclick="toggleAcc('refs')">
+            <span style="font-size:14px;font-weight:500;color:#1B1714">Research references</span>
+            <span id="acc-refs-chev" style="color:#6B645C;font-size:18px;transition:transform .22s;display:inline-block">›</span>
+          </button>
+          <div class="acc-body" id="acc-refs-body">
+            <p style="font-size:13px;color:#6B645C;line-height:1.65;margin-bottom:14px">Each assessment item is grounded in peer-reviewed research. References are also shown inline on each question. All links open PubMed, PMC, or CDC.</p>
+            <div style="display:flex;flex-direction:column;gap:5px">
+              ${Object.entries(REFS).map(([k,r])=>`<a class="ref-pill" href="${r.url}" target="_blank" rel="noopener" style="display:flex">↗ ${r.label}</a>`).join('')}
+            </div>
+          </div>
+        </div>
       </div>
 
-      <!-- Divider -->
       <div style="height:1px;background:#DFD6CC;margin:28px 0 26px"></div>
 
-      <!-- Mode + Names + Begin -->
       <div style="font-size:11px;font-weight:500;color:#6B645C;letter-spacing:.09em;text-transform:uppercase;margin-bottom:12px">How are you taking this?</div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:22px">
         <button class="mode-card${mode==='couple'?' selected':''}" onclick="set({mode:'couple'})">
@@ -375,15 +482,14 @@ function render(){
 
       <div style="text-align:center">
         <button id="begin-btn" class="btn-primary" style="font-size:16px;padding:15px 46px" onclick="set({screen:'questions',partner:'A',qIdx:0})" ${!ok?'disabled':''}>Begin →</button>
-        <p style="font-size:12px;color:#B4ADA6;margin-top:14px;line-height:1.6">Score 0, 1, or 2 · Based on the past 6–12 months · Nothing is stored</p>
+        <p style="font-size:12px;color:#B4ADA6;margin-top:14px;line-height:1.6">10 items · Score 0, 1, or 2 · Based on the past 6–12 months · Nothing is stored</p>
       </div>
     </div>`;
   }
 
-  /* QUESTIONS */
+  /* ── QUESTIONS ── */
   else if(screen==='questions'){
     const pName=nOf(partner);
-    const isFirst=qIdx===0;
     const isLast=qIdx===9&&(partner==='B'||!isCouple);
     const nextLabel=qIdx===9&&partner==='A'&&isCouple?`${abbr(nOf('B'))}'s turn →`:isLast?'Review answers':'Next →';
     html=`<div class="screen" style="padding-top:44px">
@@ -395,9 +501,14 @@ function render(){
         <span style="font-size:13px;color:#6B645C">${qIdx+1} / 10</span>
       </div>
       <div class="progress-bar"><div class="progress-fill" style="width:${prog}%"></div></div>
-      ${q.gate?`<div class="gate-warn">⚠ Gatekeeper — a score of 0 shows safety resources instead of AI analysis</div>`:''}
-      <h2 class="serif" style="font-size:30px;font-weight:500;color:#1B1714;margin-bottom:9px;line-height:1.22">${q.title}</h2>
-      <p style="font-size:14px;color:#6B645C;line-height:1.65;margin-bottom:26px">${q.thesis}</p>
+      ${q.gate?`<div class="gate-warn">⚠ Gatekeeper item — a score of 0 will show safety resources instead of AI analysis</div>`:''}
+      <div style="font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.1em;color:#A85240;margin-bottom:6px">${q.subtitle||''}</div>
+      <h2 class="serif" style="font-size:30px;font-weight:500;color:#1B1714;margin-bottom:10px;line-height:1.22">${q.title}</h2>
+      <p style="font-size:14px;color:#6B645C;line-height:1.68;margin-bottom:22px">${q.thesis}</p>
+      <div class="ref-block" style="margin-top:0;padding-top:0;border-top:none;margin-bottom:20px">
+        <div style="font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:.08em;color:#B4ADA6;margin-bottom:6px">Sources</div>
+        ${refPills(q.refs)}
+      </div>
       ${[2,1,0].map(v=>`<div class="score-opt${cur===v?' '+SC[v].selCls:''}" onclick="setScore(${v})">
         <div class="score-num">${v}</div>
         <div><div class="score-label">${SC[v].label}</div><div class="score-text">${q.opts[v]}</div></div>
@@ -409,11 +520,13 @@ function render(){
     </div>`;
   }
 
-  /* REVIEW */
+  /* ── REVIEW ── */
   else if(screen==='review'){
     const nA=nOf('A'),nB=nOf('B');
     const tA=scores.A.reduce((a,b)=>a+(b??0),0);
     const tB=scores.B.reduce((a,b)=>a+(b??0),0);
+    const hasZeroFlagA=scores.A[0]===0||scores.A[8]===0;
+    const hasZeroFlagB=scores.B[0]===0||scores.B[8]===0;
     const colsCouple='1fr 68px 68px', colsSingle='1fr 80px';
     html=`<div class="screen" style="padding-top:44px">
       <div style="font-size:11px;letter-spacing:.12em;color:#6B645C;text-transform:uppercase;margin-bottom:10px">Review</div>
@@ -436,7 +549,7 @@ function render(){
           </div>`;
         }).join('')}
       </div>
-      <div style="display:grid;grid-template-columns:${isCouple?'1fr 1fr':'180px'};gap:12px;margin-bottom:28px">
+      <div style="display:grid;grid-template-columns:${isCouple?'1fr 1fr':'180px'};gap:12px;margin-bottom:10px">
         <div class="total-card">
           <div style="font-size:12px;color:#6B645C;margin-bottom:4px">${nA}</div>
           <div class="serif" style="font-size:42px;font-weight:500;color:${PC.A};line-height:1">${tA}</div>
@@ -448,6 +561,16 @@ function render(){
           <div style="font-size:12px;color:#6B645C;margin-top:2px">out of 20</div>
         </div>`:''}
       </div>
+      <div style="margin-bottom:26px">
+        ${(()=>{
+          const bandA=scoreBand(tA,hasZeroFlagA);
+          const bandB=isCouple?scoreBand(tB,hasZeroFlagB):null;
+          return `<div style="font-size:11px;font-weight:500;color:#6B645C;text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px">Reading</div>
+          <div style="font-size:13px;color:${bandA.color};background:${bandA.bg};padding:8px 12px;border-radius:6px;margin-bottom:${bandB?'6px':'0'}">${nA}: ${bandA.label}</div>
+          ${bandB?`<div style="font-size:13px;color:${bandB.color};background:${bandB.bg};padding:8px 12px;border-radius:6px">${nB}: ${bandB.label}</div>`:''}
+          <p style="font-size:11px;color:#aaa;margin-top:7px">These bands are pragmatic guides, not validated clinical norms.</p>`;
+        })()}
+      </div>
       <div style="display:flex;gap:12px;justify-content:flex-end">
         <button class="btn-ghost" onclick="set({screen:'questions',partner:'A',qIdx:0})">← Edit</button>
         <button class="btn-primary" onclick="analyze()">Get analysis →</button>
@@ -455,7 +578,7 @@ function render(){
     </div>`;
   }
 
-  /* LOADING */
+  /* ── LOADING ── */
   else if(screen==='loading'){
     html=`<div class="screen" style="padding-top:110px;text-align:center">
       <div class="spin"></div>
@@ -464,7 +587,7 @@ function render(){
     </div>`;
   }
 
-  /* SAFETY */
+  /* ── SAFETY ── */
   else if(screen==='safety'){
     html=`<div class="screen" style="padding-top:56px">
       <div style="background:#FAE8E5;border:1.5px solid #A85240;border-radius:14px;padding:30px;margin-bottom:22px">
@@ -484,12 +607,30 @@ function render(){
     </div>`;
   }
 
-  /* RESULTS */
+  /* ── RESULTS ── */
   else if(screen==='results'&&result){
     const {overview,flags,strengths,growthAreas,closing}=result;
+    const tA=scores.A.reduce((a,b)=>a+(b??0),0);
+    const tB=scores.B.reduce((a,b)=>a+(b??0),0);
+    const hasZeroFlagA=scores.A[0]===0||scores.A[8]===0;
+    const hasZeroFlagB=scores.B[0]===0||scores.B[8]===0;
+    const bandA=scoreBand(tA,hasZeroFlagA);
+    const bandB=isCouple?scoreBand(tB,hasZeroFlagB):null;
     html=`<div class="screen" style="padding-top:44px">
       <div style="font-size:11px;letter-spacing:.12em;color:#6B645C;text-transform:uppercase;margin-bottom:10px">Analysis</div>
       <h2 class="serif" style="font-size:36px;font-weight:400;color:#1B1714;margin-bottom:22px;font-style:italic">Your relationship picture</h2>
+      <div style="display:grid;grid-template-columns:${isCouple?'1fr 1fr':'1fr'};gap:10px;margin-bottom:18px">
+        <div style="background:${bandA.bg};border-radius:10px;padding:14px 16px;text-align:center">
+          <div style="font-size:12px;color:#6B645C;margin-bottom:4px">${nOf('A')}</div>
+          <div class="serif" style="font-size:38px;font-weight:500;color:${bandA.color};line-height:1;margin-bottom:5px">${tA}<span style="font-size:18px;color:#aaa"> / 20</span></div>
+          <div style="font-size:12px;color:${bandA.color}">${bandA.label}</div>
+        </div>
+        ${isCouple&&bandB?`<div style="background:${bandB.bg};border-radius:10px;padding:14px 16px;text-align:center">
+          <div style="font-size:12px;color:#6B645C;margin-bottom:4px">${nOf('B')}</div>
+          <div class="serif" style="font-size:38px;font-weight:500;color:${bandB.color};line-height:1;margin-bottom:5px">${tB}<span style="font-size:18px;color:#aaa"> / 20</span></div>
+          <div style="font-size:12px;color:${bandB.color}">${bandB.label}</div>
+        </div>`:''}
+      </div>
       <div class="card" style="padding:22px 24px;margin-bottom:18px">
         <p style="font-size:15px;line-height:1.78;color:#1B1714;margin:0">${overview}</p>
       </div>
@@ -507,7 +648,8 @@ function render(){
         <div class="section-title" style="color:#7C5E1A">→ Growth areas</div>
         ${growthAreas.map((g,i)=>`<div style="${i<growthAreas.length-1?'margin-bottom:18px':''}"><div style="font-size:13px;font-weight:500;color:#7C5E1A;margin-bottom:5px">${g.area}</div><div style="font-size:14px;color:#1B1714;line-height:1.65">${g.advice}</div></div>`).join('')}
       </div>`:''}
-      ${closing?`<div class="card" style="padding:20px 24px;margin-bottom:24px"><p class="serif" style="font-size:19px;line-height:1.72;color:#6B645C;font-style:italic;margin:0">"${closing}"</p></div>`:''}
+      ${closing?`<div class="card" style="padding:20px 24px;margin-bottom:8px"><p class="serif" style="font-size:19px;line-height:1.72;color:#6B645C;font-style:italic;margin:0">"${closing}"</p></div>`:''}
+      <p style="font-size:11px;color:#aaa;line-height:1.55;margin-bottom:24px;padding:0 2px">Score bands are pragmatic guides, not validated clinical norms. This tool is a reflection aid — not a psychological assessment or substitute for professional counseling.</p>
       <button class="btn-ghost" onclick="restart()">Start over</button>
     </div>`;
   }
