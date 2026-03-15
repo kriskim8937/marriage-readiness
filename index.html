@@ -561,7 +561,7 @@ Structured profile:
 ${profileJson}
 
 Return ONLY valid JSON, no markdown, no code fences:
-{"overview":"2-3 warm, honest sentences summarising the profile. ${hasSafety?'Open by naming the safety concern directly but warmly.':''}","flags":[{"item":"(use item title from profile, do not invent new ones)","concern":"1-2 warm sentences elaborating the flag already in the profile"}],"strengths":["1 warm sentence per strength item already listed in profile, using names"],"growthAreas":[{"area":"(use title from profile)","advice":"2-3 actionable sentences, not new topics"}],"closing":"1-2 warm closing sentences${hasSafety?'. Affirm that seeking support takes courage.':''}"}
+{"overview":"2-3 warm, honest sentences summarising the profile. ${hasSafety?'Open by naming the safety concern directly but warmly.':''}","flags":[{"item":"(use item title from profile, do not invent new ones)","concern":"1-2 warm sentences elaborating the flag already in the profile"}],"strengths":["1 warm sentence per strength item already listed in profile, using names"],"growthAreas":[{"area":"(use title from profile)","advice":"2-3 actionable sentences, not new topics"}]}
 
 ${langInst}
 IMPORTANT: Only elaborate on what is in the profile. Do not flag items not listed. Do not add strengths not listed. Keep flags in the same order as the profile (safety first). Warm, concrete, never preachy.`;
@@ -576,14 +576,13 @@ IMPORTANT: Only elaborate on what is in the profile. Do not flag items not liste
     try{
       parsed=JSON.parse(txt.replace(/```json|```/g,'').trim());
     }catch{
-      parsed={overview:txt.slice(0,300),flags:[],strengths:[],growthAreas:[],closing:''};
+      parsed={overview:txt.slice(0,300),flags:[],strengths:[],growthAreas:[]};
     }
     const safe={
       overview: typeof parsed.overview==='string'?parsed.overview:'',
       flags: Array.isArray(parsed.flags)?parsed.flags.filter(f=>f&&typeof f.item==='string'&&typeof f.concern==='string'):[],
       strengths: Array.isArray(parsed.strengths)?parsed.strengths.filter(s=>typeof s==='string'):[],
       growthAreas: Array.isArray(parsed.growthAreas)?parsed.growthAreas.filter(g=>g&&typeof g.area==='string'&&typeof g.advice==='string'):[],
-      closing: typeof parsed.closing==='string'?parsed.closing:'',
     };
     set({result:safe,screen:'results',loading:false,hasSafety});
   }catch(e){set({error:(S.lang==='ko'?'분석 실패: ':'Analysis failed: ')+(e.message||'Please try again.'),screen:'review',loading:false});}
@@ -807,7 +806,7 @@ function render(){
 
   /* ── RESULTS ── */
   else if(screen==='results'&&result){
-    const {overview,flags,strengths,growthAreas,closing}=result;
+    const {overview,flags,strengths,growthAreas}=result;
     const tA=scores.A.reduce((a,b)=>a+(b??0),0);
     const tB=scores.B.reduce((a,b)=>a+(b??0),0);
     const bandA=scoreBand(scores.A);
@@ -853,7 +852,6 @@ function render(){
         <div class="section-title" style="color:#7C5E1A">${tr.growthTitle}</div>
         ${growthAreas.map((g,i)=>`<div style="${i<growthAreas.length-1?'margin-bottom:18px':''}"><div style="font-size:13px;font-weight:500;color:#7C5E1A;margin-bottom:5px">${esc(g.area)}</div><div style="font-size:14px;color:#1B1714;line-height:1.65">${esc(g.advice)}</div></div>`).join('')}
       </div>`:''}
-      ${closing?`<div class="card" style="padding:20px 24px;margin-bottom:8px"><p class="serif" style="font-size:19px;line-height:1.72;color:#6B645C;font-style:italic;margin:0">"${esc(closing)}"</p></div>`:''}
       <p style="font-size:11px;color:#aaa;line-height:1.55;margin-bottom:24px;padding:0 2px">${tr.disclaimerNote}</p>
       <button class="btn-ghost" onclick="restart()">${tr.restartBtn}</button>
     </div>`;
