@@ -726,7 +726,7 @@ function render(){
           const disc=isCouple&&sA!==null&&sB!==null&&Math.abs(sA-sB)>=2;
           const ql=q[lang];
           return`<div style="display:grid;grid-template-columns:${cols}" class="review-row">
-            <div class="review-cell"><span style="color:#6B645C;font-size:12px;margin-right:6px">${q.id}.</span>${esc(ql.title)}${q.hw?`<span class="tag-key">${tr.key}</span>`:''}${disc?`<span style="font-size:10px;background:#FAE8E5;color:#A85240;padding:1px 5px;border-radius:3px;margin-left:5px">${tr.gap}</span>`:''}</div>
+            <div class="review-cell"><span style="color:#6B645C;font-size:12px;margin-right:6px">${q.id}.</span>${esc(ql.title)}${disc?`<span style="font-size:10px;background:#FAE8E5;color:#A85240;padding:1px 5px;border-radius:3px;margin-left:5px">${tr.gap}</span>`:''}</div>
             <div class="review-cell center">${badge(sA)}</div>
             ${isCouple?`<div class="review-cell center">${badge(sB)}</div>`:''}
           </div>`;
