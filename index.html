@@ -21,7 +21,7 @@ body{background:#F7F4EF;font-family:'DM Sans',sans-serif;color:#1B1714;-webkit-f
 .btn-ghost{background:transparent;color:#6B645C;border:1.5px solid #DFD6CC;border-radius:8px;padding:11px 20px;font-family:inherit;font-size:14px;cursor:pointer;transition:all .15s}
 .btn-ghost:hover:not(:disabled){border-color:#A85240;color:#A85240}
 .btn-ghost:disabled{opacity:.3;cursor:not-allowed}
-.lang-toggle{position:fixed;top:16px;right:16px;z-index:100;display:flex;background:#fff;border:1.5px solid #DFD6CC;border-radius:8px;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.06)}
+.lang-toggle{display:inline-flex;background:#fff;border:1.5px solid #DFD6CC;border-radius:8px;overflow:hidden}
 .lang-btn{padding:6px 12px;font-size:12px;font-weight:500;cursor:pointer;border:none;background:transparent;color:#6B645C;transition:all .15s;font-family:inherit}
 .lang-btn.active{background:#A85240;color:#fff}
 .progress-bar{height:2px;background:#DFD6CC;border-radius:2px;overflow:hidden;margin-bottom:36px}
@@ -78,10 +78,6 @@ body{background:#F7F4EF;font-family:'DM Sans',sans-serif;color:#1B1714;-webkit-f
 </style>
 </head>
 <body>
-<div class="lang-toggle">
-  <button class="lang-btn active" id="btn-en" onclick="setLang('en')">EN</button>
-  <button class="lang-btn" id="btn-ko" onclick="setLang('ko')">한국어</button>
-</div>
 <div class="app"><div class="wrap" id="root"></div></div>
 <script>
 /* ── REFERENCES ── */
@@ -284,8 +280,10 @@ const T={
     reviewNote:'Everything look right? Edit or continue to get your analysis.',
     itemCol:'Item', readingLabel:'Reading',
     editBtn:'← Edit', analyzeBtn:'Get analysis →',
-    gap:'gap', key:'key', outOf:'out of 20',
-    bandFlags:{safe:'Address safety or critical gaps first',color:'#A85240',bg:'#FAE8E5'},
+    gap:'gap', key:'priority', outOf:'out of 20',
+    bandNote:'These bands are heuristic guides, not validated clinical norms. A 0 on any priority domain overrides the total.',
+    bandSafety:'Address safety concern first — total score is not meaningful here',
+    bandFoundation:'Priority domain scored 0 — address this regardless of total score',
     loadingText:'Reflecting on your answers…', loadingNote:'This usually takes 5–10 seconds',
     safetyTitle:'Safety first',
     safetyBody:"One or more responses indicated a current pattern of fear, coercion, or sexual pressure. The most important step right now is ensuring everyone is safe and supported — not analyzing readiness.",
@@ -300,10 +298,11 @@ const T={
     flagsTitle:'⚠ Areas needing attention',
     strengthsTitle:'✓ Strengths',
     growthTitle:'→ Growth areas',
-    disclaimerNote:'Score bands are pragmatic guides, not validated clinical norms. This tool is a reflection aid — not a psychological assessment or substitute for professional counseling.',
+    disclaimerNote:'Score bands are heuristic guides, not validated clinical norms. This is a research-informed reflection tool — not a psychometrically validated instrument or substitute for professional counseling. The AI summary is a language layer over rule-based logic, not a diagnosis.',
     promptLang:'',
     promptRole:'You are a compassionate, science-informed relationship counselor.',
     promptInstruction:'',
+    privacyNote:'Your responses stay in your browser unless you request AI analysis. If you request analysis, your scores and names are sent to our server and model provider to generate feedback. Avoid entering full legal names.',
   },
   ko:{
     langClass:'ko',
@@ -363,8 +362,10 @@ const T={
     reviewNote:'모든 답변이 맞나요? 수정하거나 분석을 받으실 수 있습니다.',
     itemCol:'항목', readingLabel:'결과',
     editBtn:'← 수정', analyzeBtn:'분석 받기 →',
-    gap:'차이', key:'핵심', outOf:'/ 20점',
-    bandFlags:{safe:'안전 문제나 심각한 격차를 먼저 해결하세요',color:'#A85240',bg:'#FAE8E5'},
+    gap:'차이', key:'우선', outOf:'/ 20점',
+    bandNote:'이 기준은 경험적 지침이며, 검증된 임상 기준이 아닙니다. 우선 항목에서 0점이 나오면 총점보다 우선합니다.',
+    bandSafety:'먼저 안전 문제를 해결하세요 — 총점은 여기서 의미가 없습니다',
+    bandFoundation:'우선 항목에서 0점 — 총점에 관계없이 이 문제를 먼저 다루세요',
     loadingText:'답변을 분석하고 있습니다…', loadingNote:'보통 5~10초 정도 소요됩니다',
     safetyTitle:'안전이 최우선입니다',
     safetyBody:'하나 이상의 응답이 두려움, 강압, 또는 성적 압박의 패턴을 나타냈습니다. 지금 가장 중요한 것은 모든 분의 안전과 지지를 확보하는 것입니다.',
@@ -379,10 +380,11 @@ const T={
     flagsTitle:'⚠ 주의가 필요한 영역',
     strengthsTitle:'✓ 강점',
     growthTitle:'→ 성장 영역',
-    disclaimerNote:'점수 기준은 실용적인 지침이며, 검증된 임상 기준이 아닙니다. 이 도구는 성찰 보조 도구이며 심리적 평가나 전문 상담을 대체하지 않습니다.',
+    disclaimerNote:'점수 기준은 경험적 지침이며, 심리측정학적으로 검증된 도구가 아닙니다. 이 도구는 연구 기반 성찰 도구이며 AI 요약은 규칙 기반 로직 위의 언어 레이어입니다. 전문 상담을 대체하지 않습니다.',
     promptLang:'한국어(존댓말)로',
     promptRole:'당신은 공감 능력이 뛰어난 과학 기반 관계 상담사입니다.',
     promptInstruction:'모든 답변을 반드시 한국어 존댓말로 작성해 주세요. 이름은 그대로 사용하세요.',
+    privacyNote:'AI 분석을 요청하지 않는 한 모든 응답은 브라우저에 저장됩니다. 분석을 요청하면 점수와 이름이 서버 및 모델 제공자에게 전송됩니다. 실명 전체는 입력하지 마세요.',
   }
 };
 
@@ -399,15 +401,16 @@ let S={
 
 const set=p=>{S={...S,...p};render();};
 const t=()=>T[S.lang];
-const q=()=>Q[S.qIdx];
-const qL=()=>Q[S.qIdx][S.lang];
 const nOf=p=>S.names[p]||(p==='A'?(S.lang==='ko'?'파트너 A':'Partner A'):(S.lang==='ko'?'파트너 B':'Partner B'));
 const abbr=str=>str.length>8?str.slice(0,7)+'…':str;
 
+/* XSS escape — used for all user-entered and AI-generated text in innerHTML */
+function esc(v=''){
+  return String(v).replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+}
+
 function setLang(l){
   S.lang=l;
-  document.getElementById('btn-en').classList.toggle('active',l==='en');
-  document.getElementById('btn-ko').classList.toggle('active',l==='ko');
   render();
 }
 
@@ -423,12 +426,7 @@ function toggleAcc(id){
 }
 
 function updateName(partner,value){
-  S.names[partner]=value;
-  const btn=document.getElementById('begin-btn');
-  if(btn){
-    const ok=S.mode&&S.names.A.trim()&&(S.mode==='single'||(S.mode==='couple'&&S.names.B.trim()));
-    btn.disabled=!ok;
-  }
+  set({names:{...S.names,[partner]:value}});
 }
 
 function setScore(v){const s=JSON.parse(JSON.stringify(S.scores));s[S.partner][S.qIdx]=v;set({scores:s});}
@@ -444,9 +442,14 @@ function goPrev(){
   else set({screen:'intro'});
 }
 
-function scoreBand(total,hasZeroFlag){
+function hasSafetyZero(sc){return sc[0]===0||sc[8]===0;}
+function hasFoundationZero(sc){return sc[1]===0||sc[4]===0||sc[5]===0;}
+
+function scoreBand(sc){
   const tr=t();
-  if(hasZeroFlag)return{label:tr.bandFlags.safe,color:tr.bandFlags.color,bg:tr.bandFlags.bg};
+  if(hasSafetyZero(sc)) return{label:tr.bandSafety,color:'#A85240',bg:'#FAE8E5'};
+  if(hasFoundationZero(sc)) return{label:tr.bandFoundation,color:'#A85240',bg:'#FAE8E5'};
+  const total=sc.reduce((a,b)=>a+(b??0),0);
   const bands=tr.scoreBands;
   if(total>=17)return bands[0];
   if(total>=13)return bands[1];
@@ -461,61 +464,125 @@ function refPills(keys){
   }).join('');
 }
 
+/* ── DETERMINISTIC PROFILE BUILDER ── */
+function buildProfile(scA, scB, isCouple, lang){
+  const flags=[], strengths=[], growth=[];
+  const totalA=scA.reduce((a,b)=>a+(b??0),0);
+  const totalB=isCouple?scB.reduce((a,b)=>a+(b??0),0):null;
+
+  // Priority order: safety zeros → foundation zeros → other zeros → discrepancies → paired 1s
+  const safetyIdx=[0,8], foundationIdx=[1,4,5];
+
+  const addFlag=(idx,partner,reason)=>{
+    const qEn=Q[idx].en.title, qKo=Q[idx].ko.title;
+    flags.push({item:`Item ${Q[idx].id}: ${lang==='ko'?qKo:qEn}`,partner,reason});
+  };
+
+  // 1. Safety zeros
+  safetyIdx.forEach(i=>{
+    if(scA[i]===0) addFlag(i,'A','safety_zero');
+    if(isCouple&&scB[i]===0) addFlag(i,'B','safety_zero');
+  });
+
+  // 2. Foundation zeros (items 2,5,6 = indices 1,4,5)
+  foundationIdx.forEach(i=>{
+    if(scA[i]===0) addFlag(i,'A','foundation_zero');
+    if(isCouple&&scB[i]===0&&!flags.find(f=>f.item.startsWith(`Item ${Q[i].id}`)&&f.partner==='B')) addFlag(i,'B','foundation_zero');
+  });
+
+  // 3. Other zeros
+  Q.forEach((q,i)=>{
+    if(safetyIdx.includes(i)||foundationIdx.includes(i))return;
+    if(scA[i]===0&&!flags.find(f=>f.item.startsWith(`Item ${q.id}`)&&f.partner==='A')) addFlag(i,'A','zero');
+    if(isCouple&&scB[i]===0&&!flags.find(f=>f.item.startsWith(`Item ${q.id}`)&&f.partner==='B')) addFlag(i,'B','zero');
+  });
+
+  // 4. Partner discrepancies ≥2 (couple mode)
+  if(isCouple) Q.forEach((q,i)=>{
+    if(scA[i]!==null&&scB[i]!==null&&Math.abs(scA[i]-scB[i])>=2)
+      flags.push({item:`Item ${q.id}: ${lang==='ko'?q.ko.title:q.en.title}`,partner:'both',reason:'discrepancy',gap:scA[i]-scB[i]});
+  });
+
+  // 5. Both scored 1 on priority domains
+  foundationIdx.forEach(i=>{
+    if(scA[i]===1&&(!isCouple||scB[i]===1))
+      flags.push({item:`Item ${Q[i].id}: ${lang==='ko'?Q[i].ko.title:Q[i].en.title}`,partner:'both',reason:'paired_one'});
+  });
+
+  // Strengths: items where A (and B if couple) both scored 2
+  Q.forEach((q,i)=>{
+    if(scA[i]===2&&(!isCouple||scB[i]===2))
+      strengths.push({item:`Item ${q.id}`,title:lang==='ko'?q.ko.title:q.en.title});
+  });
+
+  // Growth: items with 1 or mixed scores, prioritized by hw
+  Q.forEach((q,i)=>{
+    const aScore=scA[i], bScore=isCouple?scB[i]:null;
+    if(aScore===1||(isCouple&&bScore===1)){
+      if(!flags.find(f=>f.item.startsWith(`Item ${q.id}`)))
+        growth.push({item:`Item ${q.id}`,title:lang==='ko'?q.ko.title:q.en.title,priority:q.hw?1:0});
+    }
+  });
+  growth.sort((a,b)=>b.priority-a.priority);
+
+  return {flags,strengths:strengths.slice(0,4),growth:growth.slice(0,4),totalA,totalB};
+}
+
 async function analyze(){
   set({screen:'loading',loading:true,error:null});
   const nA=nOf('A'),nB=nOf('B');
-  const safetyFlagA=S.scores.A[0]===0||S.scores.A[8]===0;
-  const safetyFlagB=S.mode==='couple'&&(S.scores.B[0]===0||S.scores.B[8]===0);
-  const hasSafety=safetyFlagA||safetyFlagB;
+  const isCouple=S.mode==='couple';
+  const safetyA=hasSafetyZero(S.scores.A);
+  const safetyB=isCouple&&hasSafetyZero(S.scores.B);
+  const hasSafety=safetyA||safetyB;
   const tr=t();
   const langInst=tr.promptInstruction;
-  let prompt;
-  if(S.mode==='couple'){
-    const rows=Q.map((q,i)=>{
-      const ql=q[S.lang];
-      return `Item ${q.id} (${ql.title}): ${nA}=${S.scores.A[i]}, ${nB}=${S.scores.B[i]}${q.hw?' [high-weight]':''}${q.gate?' [safety-gatekeeper]':''}`;
-    }).join('\n');
-    prompt=`${tr.promptRole}${langInst?' '+langInst:''}
 
-Two partners named ${nA} and ${nB} independently completed a relationship readiness reflection (0=significant concern, 1=some growth needed, 2=doing well).
+  const profile=buildProfile(S.scores.A,S.scores.B,isCouple,S.lang);
 
-Results:
-${rows}
+  // Structured profile passed to AI — AI only rewrites into warm prose, adds NO new claims
+  const profileJson=JSON.stringify({
+    partnerA: nA, partnerB: isCouple?nB:null, mode: S.mode,
+    totalA: profile.totalA, totalB: profile.totalB,
+    flags: profile.flags,
+    strengths: profile.strengths,
+    growthAreas: profile.growth,
+    hasSafetyConcern: hasSafety,
+  });
 
-${hasSafety?`CRITICAL: A safety-gatekeeper item (Item 1 or Item 9) scored 0. Lead with this concern directly and warmly. Place it first in flags. Do not minimize it.`:''}
+  const prompt=`${tr.promptRole}${langInst?' '+langInst:''}
 
-Return ONLY valid JSON, no markdown, no code fences:
-{"overview":"2-3 honest sentences on the overall picture, addressing them by name${hasSafety?'. Open by naming the safety concern directly — warmly but clearly':''}","flags":[{"item":"Item N: title","concern":"1-2 sentences"}],"strengths":["sentence using their names"],"growthAreas":[{"area":"short label","advice":"2-3 actionable sentences"}],"closing":"1-2 warm sentences to both ${nA} and ${nB}${hasSafety?'. Affirm that seeking support is an act of courage':''}"}
+A couple/person completed a relationship readiness reflection. The following structured profile was computed deterministically from their scores. Your job is ONLY to rewrite this into warm, plain-language feedback. Do NOT add new claims, advice, or observations not already present in the profile below.
 
-${langInst}
-Rules: use ${nA} and ${nB} by name. Safety-gatekeeper 0s first in flags. Then other 0s, both at 1 on high-weight, discrepancy ≥2. 2-4 genuine strengths, 2-4 growth areas. Warm, concrete, never preachy.`;
-  } else {
-    const rows=Q.map((q,i)=>{
-      const ql=q[S.lang];
-      return `Item ${q.id} (${ql.title}): ${nA}=${S.scores.A[i]}${q.hw?' [high-weight]':''}${q.gate?' [safety-gatekeeper]':''}`;
-    }).join('\n');
-    prompt=`${tr.promptRole}${langInst?' '+langInst:''}
-
-A person named ${nA} reflected on their relationship from their own perspective (0=significant concern, 1=some growth needed, 2=doing well).
-
-Results:
-${rows}
-
-${hasSafety?`CRITICAL: A safety-gatekeeper item (Item 1 or Item 9) scored 0. Lead with this concern directly and warmly. Place it first in flags. Do not minimize it.`:''}
+Structured profile:
+${profileJson}
 
 Return ONLY valid JSON, no markdown, no code fences:
-{"overview":"2-3 honest sentences on what ${nA}'s scores reveal${hasSafety?'. Open by naming the safety concern directly — warmly':''}","flags":[{"item":"Item N: title","concern":"1-2 sentences"}],"strengths":["sentence addressing ${nA} directly"],"growthAreas":[{"area":"short label","advice":"2-3 sentences for ${nA} personally"}],"closing":"1-2 warm sentences to ${nA}${hasSafety?'. Affirm that recognizing this and seeking support takes courage':''}"}
+{"overview":"2-3 warm, honest sentences summarising the profile. ${hasSafety?'Open by naming the safety concern directly but warmly.':''}","flags":[{"item":"(use item title from profile, do not invent new ones)","concern":"1-2 warm sentences elaborating the flag already in the profile"}],"strengths":["1 warm sentence per strength item already listed in profile, using names"],"growthAreas":[{"area":"(use title from profile)","advice":"2-3 actionable sentences, not new topics"}],"closing":"1-2 warm closing sentences${hasSafety?'. Affirm that seeking support takes courage.':''}"}
 
 ${langInst}
-Rules: use ${nA} by name. Safety 0s first in flags. Then other 0s or 1s on high-weight. 2-4 genuine strengths, 2-4 growth areas. Warm, concrete, never preachy.`;
-  }
+IMPORTANT: Only elaborate on what is in the profile. Do not flag items not listed. Do not add strengths not listed. Keep flags in the same order as the profile (safety first). Warm, concrete, never preachy.`;
+
   try{
     const res=await fetch('/api/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1400,messages:[{role:'user',content:prompt}]})});
     const data=await res.json();
     if(data.error)throw new Error(typeof data.error==='object'?data.error.message:data.error);
     const txt=data.content?.map(b=>b.text||'').join('')||'';
-    const parsed=JSON.parse(txt.replace(/```json|```/g,'').trim());
-    set({result:parsed,screen:'results',loading:false,hasSafety});
+    // Schema-validated parse with safe defaults
+    let parsed;
+    try{
+      parsed=JSON.parse(txt.replace(/```json|```/g,'').trim());
+    }catch{
+      parsed={overview:txt.slice(0,300),flags:[],strengths:[],growthAreas:[],closing:''};
+    }
+    const safe={
+      overview: typeof parsed.overview==='string'?parsed.overview:'',
+      flags: Array.isArray(parsed.flags)?parsed.flags.filter(f=>f&&typeof f.item==='string'&&typeof f.concern==='string'):[],
+      strengths: Array.isArray(parsed.strengths)?parsed.strengths.filter(s=>typeof s==='string'):[],
+      growthAreas: Array.isArray(parsed.growthAreas)?parsed.growthAreas.filter(g=>g&&typeof g.area==='string'&&typeof g.advice==='string'):[],
+      closing: typeof parsed.closing==='string'?parsed.closing:'',
+    };
+    set({result:safe,screen:'results',loading:false,hasSafety});
   }catch(e){set({error:(S.lang==='ko'?'분석 실패: ':'Analysis failed: ')+(e.message||'Please try again.'),screen:'review',loading:false});}
 }
 
@@ -541,7 +608,7 @@ function render(){
   const isCouple=mode==='couple';
   const steps=isCouple?20:10;
   const step=isCouple?(partner==='A'?qIdx:10+qIdx):qIdx;
-  const prog=(step/steps)*100;
+  const prog=((step+1)/steps)*100;
   let html='';
 
   /* ── INTRO ── */
@@ -573,6 +640,12 @@ function render(){
 
     html=`<div class="screen ${tr.langClass}" style="padding-top:52px">
       <div style="text-align:center;margin-bottom:44px">
+        <div style="display:flex;justify-content:center;margin-bottom:20px">
+          <div class="lang-toggle">
+            <button class="lang-btn${lang==='en'?' active':''}" onclick="setLang('en')">EN</button>
+            <button class="lang-btn${lang==='ko'?' active':''}" onclick="setLang('ko')">한국어</button>
+          </div>
+        </div>
         <div style="font-size:11px;letter-spacing:.16em;color:#A85240;text-transform:uppercase;margin-bottom:14px;font-weight:500">${tr.tag}</div>
         <h1 class="serif" style="font-size:58px;font-weight:400;line-height:1;color:#1B1714;font-style:italic;margin-bottom:16px">${tr.title}</h1>
         <p style="font-size:15px;color:#6B645C;line-height:1.75;max-width:380px;margin:0 auto;font-weight:300">${tr.subtitle}</p>
@@ -616,11 +689,11 @@ function render(){
         <div style="display:flex;flex-direction:column;gap:10px">
           <div style="position:relative">
             ${isCouple?`<div style="position:absolute;left:13px;top:50%;transform:translateY(-50%);width:22px;height:22px;border-radius:50%;background:${PC.A};display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:600;color:#fff;pointer-events:none">1</div>`:''}
-            <input class="name-input" style="${isCouple?'padding-left:45px':''}" type="text" maxlength="24" placeholder="${mode==='single'?tr.namePlaceholderA1:tr.namePlaceholderA2}" value="${names.A}" oninput="updateName('A',this.value)">
+            <input class="name-input" style="${isCouple?'padding-left:45px':''}" type="text" maxlength="24" placeholder="${mode==='single'?tr.namePlaceholderA1:tr.namePlaceholderA2}" value="${esc(names.A)}" oninput="updateName('A',this.value)">
           </div>
           ${isCouple?`<div style="position:relative">
             <div style="position:absolute;left:13px;top:50%;transform:translateY(-50%);width:22px;height:22px;border-radius:50%;background:${PC.B};display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:600;color:#fff;pointer-events:none">2</div>
-            <input class="name-input" style="padding-left:45px" type="text" maxlength="24" placeholder="${tr.namePlaceholderB}" value="${names.B}" oninput="updateName('B',this.value)">
+            <input class="name-input" style="padding-left:45px" type="text" maxlength="24" placeholder="${tr.namePlaceholderB}" value="${esc(names.B)}" oninput="updateName('B',this.value)">
           </div>`:''}
         </div>
       </div>
@@ -641,8 +714,8 @@ function render(){
     html=`<div class="screen ${tr.langClass}" style="padding-top:44px">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:22px">
         <div style="display:flex;align-items:center;gap:10px">
-          <div class="partner-dot" style="background:${PC[partner]}">${abbr(pName).slice(0,2).toUpperCase()}</div>
-          <span style="font-size:14px;color:#6B645C">${isCouple?abbr(pName)+tr.yourTurn:tr.yourReflection}</span>
+          <div class="partner-dot" style="background:${PC[partner]}">${esc(abbr(pName)).slice(0,2).toUpperCase()}</div>
+          <span style="font-size:14px;color:#6B645C">${isCouple?esc(abbr(pName))+tr.yourTurn:tr.yourReflection}</span>
         </div>
         <span style="font-size:13px;color:#6B645C">${qIdx+1} / 10</span>
       </div>
@@ -670,28 +743,26 @@ function render(){
     const nA=nOf('A'),nB=nOf('B');
     const tA=scores.A.reduce((a,b)=>a+(b??0),0);
     const tB=scores.B.reduce((a,b)=>a+(b??0),0);
-    const hasZeroFlagA=scores.A[0]===0||scores.A[8]===0;
-    const hasZeroFlagB=scores.B[0]===0||scores.B[8]===0;
-    const bandA=scoreBand(tA,hasZeroFlagA);
-    const bandB=isCouple?scoreBand(tB,hasZeroFlagB):null;
+    const bandA=scoreBand(scores.A);
+    const bandB=isCouple?scoreBand(scores.B):null;
     const cols=isCouple?'1fr 68px 68px':'1fr 80px';
     html=`<div class="screen ${tr.langClass}" style="padding-top:44px">
       <div style="font-size:11px;letter-spacing:.12em;color:#6B645C;text-transform:uppercase;margin-bottom:10px">${tr.reviewTitle}</div>
       <h2 class="serif" style="font-size:36px;font-weight:400;color:#1B1714;margin-bottom:8px;font-style:italic">${tr.reviewHeading}</h2>
       <p style="font-size:14px;color:#6B645C;line-height:1.65;margin-bottom:26px">${tr.reviewNote}</p>
-      ${error?`<div style="background:#FAE8E5;border:1px solid #A85240;border-radius:8px;padding:12px 16px;margin-bottom:18px;font-size:14px;color:#A85240">${error}</div>`:''}
+      ${error?`<div style="background:#FAE8E5;border:1px solid #A85240;border-radius:8px;padding:12px 16px;margin-bottom:18px;font-size:14px;color:#A85240">${esc(error)}</div>`:''}
       <div class="card" style="overflow:hidden;margin-bottom:22px">
         <div style="display:grid;grid-template-columns:${cols}" class="review-head">
           <div>${tr.itemCol}</div>
-          <div style="text-align:center;color:${PC.A}">${abbr(nA)}</div>
-          ${isCouple?`<div style="text-align:center;color:${PC.B}">${abbr(nB)}</div>`:''}
+          <div style="text-align:center;color:${PC.A}">${esc(abbr(nA))}</div>
+          ${isCouple?`<div style="text-align:center;color:${PC.B}">${esc(abbr(nB))}</div>`:''}
         </div>
         ${Q.map((q,i)=>{
           const sA=scores.A[i],sB=scores.B[i];
           const disc=isCouple&&sA!==null&&sB!==null&&Math.abs(sA-sB)>=2;
           const ql=q[lang];
           return`<div style="display:grid;grid-template-columns:${cols}" class="review-row">
-            <div class="review-cell"><span style="color:#6B645C;font-size:12px;margin-right:6px">${q.id}.</span>${ql.title}${q.hw?`<span class="tag-key">${tr.key}</span>`:''}${disc?`<span style="font-size:10px;background:#FAE8E5;color:#A85240;padding:1px 5px;border-radius:3px;margin-left:5px">${tr.gap}</span>`:''}</div>
+            <div class="review-cell"><span style="color:#6B645C;font-size:12px;margin-right:6px">${q.id}.</span>${esc(ql.title)}${q.hw?`<span class="tag-key">${tr.key}</span>`:''}${disc?`<span style="font-size:10px;background:#FAE8E5;color:#A85240;padding:1px 5px;border-radius:3px;margin-left:5px">${tr.gap}</span>`:''}</div>
             <div class="review-cell center">${badge(sA)}</div>
             ${isCouple?`<div class="review-cell center">${badge(sB)}</div>`:''}
           </div>`;
@@ -699,20 +770,20 @@ function render(){
       </div>
       <div style="display:grid;grid-template-columns:${isCouple?'1fr 1fr':'180px'};gap:12px;margin-bottom:10px">
         <div class="total-card">
-          <div style="font-size:12px;color:#6B645C;margin-bottom:4px">${nA}</div>
+          <div style="font-size:12px;color:#6B645C;margin-bottom:4px">${esc(nA)}</div>
           <div class="serif" style="font-size:42px;font-weight:500;color:${PC.A};line-height:1">${tA}</div>
           <div style="font-size:12px;color:#6B645C;margin-top:2px">${tr.outOf}</div>
         </div>
         ${isCouple?`<div class="total-card">
-          <div style="font-size:12px;color:#6B645C;margin-bottom:4px">${nB}</div>
+          <div style="font-size:12px;color:#6B645C;margin-bottom:4px">${esc(nB)}</div>
           <div class="serif" style="font-size:42px;font-weight:500;color:${PC.B};line-height:1">${tB}</div>
           <div style="font-size:12px;color:#6B645C;margin-top:2px">${tr.outOf}</div>
         </div>`:''}
       </div>
       <div style="margin-bottom:26px">
         <div style="font-size:11px;font-weight:500;color:#6B645C;text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px">${tr.readingLabel}</div>
-        <div style="font-size:13px;color:${bandA.color};background:${bandA.bg};padding:8px 12px;border-radius:6px;margin-bottom:${bandB?'6px':'0'}">${nA}: ${bandA.label}</div>
-        ${bandB?`<div style="font-size:13px;color:${bandB.color};background:${bandB.bg};padding:8px 12px;border-radius:6px">${nB}: ${bandB.label}</div>`:''}
+        <div style="font-size:13px;color:${bandA.color};background:${bandA.bg};padding:8px 12px;border-radius:6px;margin-bottom:${bandB?'6px':'0'}">${esc(nA)}: ${esc(bandA.label)}</div>
+        ${bandB?`<div style="font-size:13px;color:${bandB.color};background:${bandB.bg};padding:8px 12px;border-radius:6px">${esc(nB)}: ${esc(bandB.label)}</div>`:''}
         <p style="font-size:11px;color:#aaa;margin-top:7px">${tr.bandNote}</p>
       </div>
       <div style="display:flex;gap:12px;justify-content:flex-end">
@@ -736,23 +807,21 @@ function render(){
     const {overview,flags,strengths,growthAreas,closing}=result;
     const tA=scores.A.reduce((a,b)=>a+(b??0),0);
     const tB=scores.B.reduce((a,b)=>a+(b??0),0);
-    const hasZeroFlagA=scores.A[0]===0||scores.A[8]===0;
-    const hasZeroFlagB=scores.B[0]===0||scores.B[8]===0;
-    const bandA=scoreBand(tA,hasZeroFlagA);
-    const bandB=isCouple?scoreBand(tB,hasZeroFlagB):null;
+    const bandA=scoreBand(scores.A);
+    const bandB=isCouple?scoreBand(scores.B):null;
     html=`<div class="screen ${tr.langClass}" style="padding-top:44px">
       <div style="font-size:11px;letter-spacing:.12em;color:#6B645C;text-transform:uppercase;margin-bottom:10px">${tr.analysisTag}</div>
       <h2 class="serif" style="font-size:36px;font-weight:400;color:#1B1714;margin-bottom:22px;font-style:italic">${tr.analysisTitle}</h2>
       <div style="display:grid;grid-template-columns:${isCouple?'1fr 1fr':'1fr'};gap:10px;margin-bottom:18px">
         <div style="background:${bandA.bg};border-radius:10px;padding:14px 16px;text-align:center">
-          <div style="font-size:12px;color:#6B645C;margin-bottom:4px">${nOf('A')}</div>
+          <div style="font-size:12px;color:#6B645C;margin-bottom:4px">${esc(nOf('A'))}</div>
           <div class="serif" style="font-size:38px;font-weight:500;color:${bandA.color};line-height:1;margin-bottom:5px">${tA}<span style="font-size:18px;color:#aaa"> / 20</span></div>
-          <div style="font-size:12px;color:${bandA.color}">${bandA.label}</div>
+          <div style="font-size:12px;color:${bandA.color}">${esc(bandA.label)}</div>
         </div>
         ${isCouple&&bandB?`<div style="background:${bandB.bg};border-radius:10px;padding:14px 16px;text-align:center">
-          <div style="font-size:12px;color:#6B645C;margin-bottom:4px">${nOf('B')}</div>
+          <div style="font-size:12px;color:#6B645C;margin-bottom:4px">${esc(nOf('B'))}</div>
           <div class="serif" style="font-size:38px;font-weight:500;color:${bandB.color};line-height:1;margin-bottom:5px">${tB}<span style="font-size:18px;color:#aaa"> / 20</span></div>
-          <div style="font-size:12px;color:${bandB.color}">${bandB.label}</div>
+          <div style="font-size:12px;color:${bandB.color}">${esc(bandB.label)}</div>
         </div>`:''}
       </div>
       ${S.hasSafety?`<div style="background:#FAE8E5;border:1.5px solid #A85240;border-radius:12px;padding:20px 22px;margin-bottom:18px">
@@ -765,23 +834,23 @@ function render(){
         </ul>
       </div>`:''}
       <div class="card" style="padding:22px 24px;margin-bottom:18px">
-        <p style="font-size:15px;line-height:1.78;color:#1B1714;margin:0">${overview}</p>
+        <p style="font-size:15px;line-height:1.78;color:#1B1714;margin:0">${esc(overview)}</p>
       </div>
       ${flags&&flags.length?`<div class="section" style="background:#FAE8E5;border:1px solid #A85240">
         <div class="section-title" style="color:#A85240">${tr.flagsTitle}</div>
-        ${flags.map((f,i)=>`<div style="${i<flags.length-1?'margin-bottom:16px':''}"><div style="font-size:13px;font-weight:500;color:#A85240;margin-bottom:4px">${f.item}</div><div style="font-size:14px;color:#1B1714;line-height:1.65">${f.concern}</div></div>`).join('')}
+        ${flags.map((f,i)=>`<div style="${i<flags.length-1?'margin-bottom:16px':''}"><div style="font-size:13px;font-weight:500;color:#A85240;margin-bottom:4px">${esc(f.item)}</div><div style="font-size:14px;color:#1B1714;line-height:1.65">${esc(f.concern)}</div></div>`).join('')}
       </div>`:''}
       ${strengths&&strengths.length?`<div class="section" style="background:#EAF3EC;border:1px solid #3D6E50">
         <div class="section-title" style="color:#3D6E50">${tr.strengthsTitle}</div>
         <ul style="list-style:none;padding:0;display:flex;flex-direction:column;gap:10px">
-          ${strengths.map(s=>`<li style="display:flex;gap:10px;align-items:flex-start"><span style="color:#3D6E50;margin-top:3px;font-size:13px;flex-shrink:0">✓</span><span style="font-size:14px;line-height:1.65;color:#1B1714">${s}</span></li>`).join('')}
+          ${strengths.map(s=>`<li style="display:flex;gap:10px;align-items:flex-start"><span style="color:#3D6E50;margin-top:3px;font-size:13px;flex-shrink:0">✓</span><span style="font-size:14px;line-height:1.65;color:#1B1714">${esc(s)}</span></li>`).join('')}
         </ul>
       </div>`:''}
       ${growthAreas&&growthAreas.length?`<div class="section" style="background:#FBF5E6;border:1px solid #8B6A1A">
         <div class="section-title" style="color:#7C5E1A">${tr.growthTitle}</div>
-        ${growthAreas.map((g,i)=>`<div style="${i<growthAreas.length-1?'margin-bottom:18px':''}"><div style="font-size:13px;font-weight:500;color:#7C5E1A;margin-bottom:5px">${g.area}</div><div style="font-size:14px;color:#1B1714;line-height:1.65">${g.advice}</div></div>`).join('')}
+        ${growthAreas.map((g,i)=>`<div style="${i<growthAreas.length-1?'margin-bottom:18px':''}"><div style="font-size:13px;font-weight:500;color:#7C5E1A;margin-bottom:5px">${esc(g.area)}</div><div style="font-size:14px;color:#1B1714;line-height:1.65">${esc(g.advice)}</div></div>`).join('')}
       </div>`:''}
-      ${closing?`<div class="card" style="padding:20px 24px;margin-bottom:8px"><p class="serif" style="font-size:19px;line-height:1.72;color:#6B645C;font-style:italic;margin:0">"${closing}"</p></div>`:''}
+      ${closing?`<div class="card" style="padding:20px 24px;margin-bottom:8px"><p class="serif" style="font-size:19px;line-height:1.72;color:#6B645C;font-style:italic;margin:0">"${esc(closing)}"</p></div>`:''}
       <p style="font-size:11px;color:#aaa;line-height:1.55;margin-bottom:24px;padding:0 2px">${tr.disclaimerNote}</p>
       <button class="btn-ghost" onclick="restart()">${tr.restartBtn}</button>
     </div>`;
