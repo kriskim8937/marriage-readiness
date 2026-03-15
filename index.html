@@ -231,7 +231,6 @@ const T={
     tag:'Marriage Readiness Reflection',
     title:'Are We Ready for Marriage?',
     subtitle:'A science-informed reflection on the patterns that matter most for a lasting partnership.',
-    whatTitle:"What this is — and isn't",
     itIs:'It is', itIsnt:"It isn't",
     isItems:['A reflection tool','A conversation starter','A way to surface blind spots','Based on peer-reviewed research'],
     isntItems:['A psychological diagnosis','A pass/fail test','A substitute for counseling','A final verdict on any relationship'],
@@ -312,7 +311,6 @@ const T={
     tag:'결혼 준비도 성찰',
     title:'우리, 결혼해도 괜찮을까?',
     subtitle:'오래가는 관계를 위해 정말 중요한 것들을 과학적 근거를 바탕으로 함께 돌아봅니다.',
-    whatTitle:'이게 뭔가요?',
     itIs:'맞습니다', itIsnt:'아닙니다',
     isItems:['함께 나눌 대화의 시작점','서로 미처 몰랐던 부분을 알아가는','솔직한 자기 성찰의 계기','동료 심사를 거친 연구에 기반'],
     isntItems:['심리 진단 도구','합격·불합격 테스트','상담의 대체재','관계에 대한 최종 판단'],
@@ -619,7 +617,6 @@ function render(){
         <p style="font-size:15px;color:#6B645C;line-height:1.75;max-width:380px;margin:0 auto;font-weight:300">${tr.subtitle}</p>
       </div>
       <div style="background:#fff;border:1px solid #DFD6CC;border-radius:12px;padding:20px 22px;margin-bottom:16px">
-        <div style="font-size:11px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:#6B645C;margin-bottom:14px">${tr.whatTitle}</div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
           <div style="background:#EAF3EC;border-radius:8px;padding:12px 14px">
             <div style="font-size:11px;font-weight:500;color:#3D6E50;text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px">${tr.itIs}</div>
@@ -838,7 +835,10 @@ function render(){
 
       <p style="font-size:11px;color:#aaa;line-height:1.55;margin-bottom:16px;padding:0 2px">${tr.disclaimerNote}</p>
       <p style="font-size:13px;color:#6B645C;text-align:center;margin-bottom:24px">${lang==='ko'?'이 도구에 대한 의견이 있으신가요?':'Thoughts on this tool?'} <a href="mailto:kriskim8937@gmail.com?subject=${encodeURIComponent(lang==='ko'?'Foundations 피드백':'Foundations feedback')}" style="color:#A85240;text-decoration:underline">${lang==='ko'?'의견 보내기':'Send us a note'}</a></p>
-      <button class="btn-ghost" onclick="restart()">${tr.restartBtn}</button>
+      <div style="display:flex;gap:12px;justify-content:space-between">
+        <button class="btn-ghost" onclick="set({screen:'review'})">${lang==='ko'?'← 답변 다시 보기':'← Back to answers'}</button>
+        <button class="btn-ghost" onclick="restart()">${tr.restartBtn}</button>
+      </div>
     </div>`;
   }
 
