@@ -426,7 +426,10 @@ function toggleAcc(id){
 }
 
 function updateName(partner,value){
-  set({names:{...S.names,[partner]:value}});
+  S.names[partner]=value;
+  const ok=S.mode&&S.names.A.trim()&&(S.mode==='single'||(S.mode==='couple'&&S.names.B.trim()));
+  const btn=document.getElementById('begin-btn');
+  if(btn) btn.disabled=!ok;
 }
 
 function setScore(v){const s=JSON.parse(JSON.stringify(S.scores));s[S.partner][S.qIdx]=v;set({scores:s});}
