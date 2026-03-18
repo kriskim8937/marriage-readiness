@@ -110,6 +110,8 @@ const REFS={
   lebow:   {label:'Lebow et al., 2022',url:'https://pmc.ncbi.nlm.nih.gov/articles/PMC10087549/'},
   megale:  {label:'Megale et al., 2021',url:'https://pmc.ncbi.nlm.nih.gov/articles/PMC8127847/'},
   carroll: {label:'Carroll & Doherty, 2003',url:'https://scholarsarchive.byu.edu/facpub/4333/'},
+  doss:    {label:'Doss et al., 2009',url:'https://pubmed.ncbi.nlm.nih.gov/19016573/'},
+  mahoney: {label:'Mahoney et al., 2001',url:'https://pubmed.ncbi.nlm.nih.gov/10750665/'},
 };
 
 const Q=[
@@ -134,7 +136,19 @@ const Q=[
        thesis:"삶의 중요한 영역들이 맞지 않으면 타협하기 어려운 갈등이 반복됩니다. 돈 문제로 자주 싸우는 커플은 관계가 더 불안정하고, 아이를 낳은 뒤에는 좋은 관계도 만족도가 떨어지는 경우가 많습니다. 비슷한 가치관은 장기적 관계의 중요한 토대입니다.",
        opts:{2:"인생의 중요한 부분들을 이미 충분히 이야기했고, 방향이 맞거나 진심으로 합의할 수 있는 지점에 도달했습니다. 그냥 미뤄둔 게 아닙니다.",
              1:"일부는 맞지만, 아직 명확히 이야기 못 한 부분이 있거나, 막연하게 '어떻게 되겠지'라고 생각하는 영역이 있습니다.",
-             0:"최소 하나의 중요한 영역에서 해결되지 않은 큰 차이가 있거나, 한 사람 이상이 그 대화 자체를 피하고 있습니다."}}},
+             0:"최소 하나의 중요한 영역에서 해결되지 않은 큰 차이가 있거나, 한 사람 이상이 그 대화 자체를 피하고 있습니다."}},
+   detailed:[
+     {refs:['doss'],en:"We have explicitly discussed whether we want children and reached a genuine agreement — not a silent hope that the other will eventually change their mind.",ko:"자녀를 원하는지에 대해 명확히 이야기 나눴고, 상대가 언젠가 마음을 바꾸길 속으로 기대하는 것이 아닌 진심으로 합의에 이르렀습니다."},
+     {refs:['dew'],en:"We have discussed our core money values — spending vs. saving, risk tolerance, and financial priorities — and feel genuinely compatible.",ko:"소비 vs. 저축, 위험 감수 성향, 재정 우선순위 등 돈에 대한 핵심 가치관을 이야기 나눴고, 서로 진심으로 맞는다고 느낍니다."},
+     {refs:['yilmaz','dew'],en:"We have fully disclosed debts, financial obligations, and financial history to each other — no significant financial surprises remain.",ko:"빚, 재정적 의무, 금융 이력을 서로 완전히 공개했으며, 아직 드러나지 않은 중요한 재정적 내용이 없습니다."},
+     {refs:['mahoney'],en:"We are aligned not just on what we believe, but on how religion or spirituality will shape our daily home life and how we would raise children.",ko:"단순히 신념이 비슷한 것을 넘어, 종교나 영성이 일상적인 가정생활과 자녀 양육 방식에 어떤 역할을 할지에 대해서도 서로 맞닿아 있습니다."},
+     {refs:['doss'],en:"If we plan to have children, we are aligned on core parenting approach — discipline style, educational priorities, and the role of extended family in raising children.",ko:"자녀를 계획한다면, 훈육 방식, 교육 우선순위, 양육에서 친인척의 역할에 대한 핵심 육아 철학이 서로 맞습니다."},
+     {refs:['peetz'],en:"We are aligned on where we want to build our life long-term, and have discussed what happens if a career opportunity requires one of us to relocate.",ko:"장기적으로 어디서 살 것인지 방향이 맞고, 커리어로 인해 한 사람이 이사해야 하는 상황에 대해서도 이야기 나눴습니다."},
+     {refs:['stanley'],en:"We have discussed and agree on how involved our families of origin will be — including time, emotional energy, and financial support expectations.",ko:"각자의 원가족이 우리 삶에 얼마나 관여할지를 이야기 나눴고, 시간, 정서적 에너지, 재정 지원 기대에 대해 합의했습니다."},
+     {refs:['newkirk','ciciolla'],en:"We are compatible in how much of our lives we want dedicated to career versus relationship, family, and rest — neither feels held back or left behind.",ko:"커리어에 얼마나 삶을 쏟을지, 그리고 관계·가족·휴식과의 균형에 대해 서로 맞습니다. 어느 쪽도 억눌린다거나 뒤처진다는 느낌을 받지 않습니다."},
+     {refs:['bogdan','vanderwal'],en:"We share enough foundational values — around fairness, gender roles, and what a good life looks like — that we feel we are building toward the same vision.",ko:"공정함, 성 역할, 좋은 삶이 무엇인지에 대한 근본적인 가치관을 충분히 공유하고 있어, 같은 방향을 향해 나아가고 있다고 느낍니다."},
+     {refs:['vanderwal'],en:"Our daily lives are genuinely compatible — how we socialize, spend free time, approach health, and what a typical week looks like feels like something we both want.",ko:"교제 방식, 여가 활용, 건강에 대한 태도, 평범한 한 주의 모습 등 일상적인 삶이 진심으로 잘 맞습니다."}
+   ]},
   {id:3,refs:['johnson','salvatore','ha'],
    en:{title:"Conflict skills & repair",subtitle:"How we fight and recover",
        thesis:"The issue is not whether you fight — conflict is normal — but whether it stays respectful and whether you can recover afterward. Lower negative communication consistently links to higher satisfaction, and repair ability predicts long-term stability.",
@@ -244,15 +258,15 @@ const T={
     ],
     howSteps:[
       ['Answer separately','Each partner completes all 10 items privately — ideally in different rooms, without discussing answers first.'],
-      ['Rate the last 6–12 months','Score your typical pattern, not a single incident. 2 = doing well, 1 = some growth needed, 0 = significant concern.'],
+      ['Rate the last 6–12 months','Score your typical pattern, not a single incident. Options 0, 1, 2 score as 0, 5, or 10 points per domain. Total is out of 100.'],
       ['Pay attention to the profile','A 0 on Item 10 (Safety) must be addressed first. A 0 on Items 1, 2, or 5 should not be overridden by a high total.'],
-      ['Compare and discuss','Look at where scores differ by 2+ points. Focus on what concrete change would move each 1 to a 2.']
+      ['Compare and discuss','Look at where scores differ by 5 or more points. Focus on what concrete changes would raise each weak area.']
     ],
     scoreBands:[
-      {range:'17–20',label:'Strong foundation',color:'#3D6E50',bg:'#EAF3EC'},
-      {range:'13–16',label:'Solid — some areas to strengthen',color:'#7C5E1A',bg:'#FBF5E6'},
-      {range:'9–12', label:'Meaningful gaps present',color:'#8B6A1A',bg:'#FBF5E6'},
-      {range:'0–8',  label:'Significant work needed first',color:'#A85240',bg:'#FAE8E5'},
+      {range:'85–100',label:'Strong foundation',color:'#3D6E50',bg:'#EAF3EC'},
+      {range:'65–84',label:'Solid — some areas to strengthen',color:'#7C5E1A',bg:'#FBF5E6'},
+      {range:'45–64', label:'Meaningful gaps present',color:'#8B6A1A',bg:'#FBF5E6'},
+      {range:'0–44',  label:'Significant work needed first',color:'#A85240',bg:'#FAE8E5'},
     ],
     bandNote:'These bands are heuristic guides, not validated clinical norms. Always read the profile before the total.',
     bandSafety:'Address safety concern first — total score is not meaningful here',
@@ -269,7 +283,7 @@ const T={
     namePlaceholderA1:'Your name or nickname', namePlaceholderA2:'First partner — name or nickname',
     namePlaceholderB:'Second partner — name or nickname',
     beginBtn:'Begin →',
-    beginNote:'10 items · Score 0, 1, or 2 · Based on the past 6–12 months · Nothing is stored',
+    beginNote:'10 items · Score 0–10 per domain · Based on the past 6–12 months · Nothing is stored',
     yourTurn:"'s turn", yourReflection:'Your reflection',
     sourcesLabel:'Sources',
     scoreLabels:{2:'Doing well',1:'Some growth needed',0:'Significant concern'},
@@ -279,7 +293,10 @@ const T={
     reviewNote:'Everything look right? Edit or continue to get your analysis.',
     itemCol:'Item', readingLabel:'Reading',
     editBtn:'← Edit', analyzeBtn:'Get analysis →',
-    gap:'gap', key:'priority', outOf:'out of 20',
+    gap:'gap', key:'priority', outOf:'out of 100',
+    detailToggle:'Want a detailed breakdown?', simpleLabel:'Simple', detailedLabel:'Detailed',
+    detailResetNote:'Switching mode resets this section\'s answers.',
+    yes:'Yes', no:'No',
     loadingText:'Reflecting on your answers…', loadingNote:'This usually takes 5–10 seconds',
     safetyTitle:'Safety first',
     safetyBody:"One or more responses indicated a current pattern of fear, coercion, or sexual pressure. The most important step right now is ensuring everyone is safe and supported.",
@@ -318,15 +335,15 @@ const T={
     ],
     howSteps:[
       ['각자 따로 답하기','두 사람이 서로 의논하지 않고 각자 답합니다. 가능하면 다른 방에서, 상대 답을 보지 않고 하는 것이 좋습니다.'],
-      ['지난 6~12개월을 기준으로','특별한 한 번의 사건이 아니라, 평소 패턴을 기준으로 점수를 매기세요. 2 = 잘 되고 있음, 1 = 개선이 필요함, 0 = 심각한 우려.'],
+      ['지난 6~12개월을 기준으로','특별한 한 번의 사건이 아닌 평소 패턴을 기준으로 매기세요. 0·1·2 선택지는 항목별 0·5·10점으로 환산되며, 총점은 100점 만점입니다.'],
       ['숫자보다 패턴을 먼저 보기','항목 10(안전)에서 0점이 나왔다면 안전 문제를 먼저 해결해야 합니다. 항목 1, 2, 5에서의 0점은 전체 총점이 높더라도 무시해선 안 됩니다.'],
-      ['비교하고 대화 나누기','2점 이상 차이 나는 항목에 주목하세요. 각 1점을 2점으로 끌어올리려면 무엇이 달라져야 할지 구체적으로 이야기해 보세요.']
+      ['비교하고 대화 나누기','점수 차이가 5점 이상 나는 항목에 주목하세요. 취약한 부분을 개선하려면 무엇이 달라져야 할지 구체적으로 이야기해 보세요.']
     ],
     scoreBands:[
-      {range:'17–20',label:'관계의 기반이 단단합니다',color:'#3D6E50',bg:'#EAF3EC'},
-      {range:'13–16',label:'전반적으로 좋지만 보완할 부분이 있습니다',color:'#7C5E1A',bg:'#FBF5E6'},
-      {range:'9–12', label:'해결해야 할 취약점이 있습니다',color:'#8B6A1A',bg:'#FBF5E6'},
-      {range:'0–8',  label:'먼저 다뤄야 할 중요한 부분이 있습니다',color:'#A85240',bg:'#FAE8E5'},
+      {range:'85–100',label:'관계의 기반이 단단합니다',color:'#3D6E50',bg:'#EAF3EC'},
+      {range:'65–84',label:'전반적으로 좋지만 보완할 부분이 있습니다',color:'#7C5E1A',bg:'#FBF5E6'},
+      {range:'45–64', label:'해결해야 할 취약점이 있습니다',color:'#8B6A1A',bg:'#FBF5E6'},
+      {range:'0–44',  label:'먼저 다뤄야 할 중요한 부분이 있습니다',color:'#A85240',bg:'#FAE8E5'},
     ],
     bandNote:'이 점수 기준은 실용적인 가이드이며, 임상적으로 검증된 기준이 아닙니다. 총점보다 항목별 패턴을 먼저 살펴보세요.',
     bandSafety:'안전 문제를 먼저 해결하세요 — 이 경우 총점은 의미가 없습니다',
@@ -343,7 +360,7 @@ const T={
     namePlaceholderA1:'이름 또는 닉네임', namePlaceholderA2:'첫 번째 분 — 이름 또는 닉네임',
     namePlaceholderB:'두 번째 분 — 이름 또는 닉네임',
     beginBtn:'시작하기 →',
-    beginNote:'10개 항목 · 0, 1, 2점으로 평가 · 지난 6–12개월 기준 · 저장되지 않습니다',
+    beginNote:'10개 항목 · 항목별 0–10점 · 지난 6–12개월 기준 · 저장되지 않습니다',
     yourTurn:'의 차례', yourReflection:'나의 성찰',
     sourcesLabel:'참고 연구',
     scoreLabels:{2:'잘 되고 있음',1:'개선이 필요함',0:'심각한 우려'},
@@ -353,7 +370,10 @@ const T={
     reviewNote:'답변을 한 번 더 확인해 보세요. 수정하거나 그대로 분석을 받으실 수 있습니다.',
     itemCol:'항목', readingLabel:'점수 해석',
     editBtn:'← 수정하기', analyzeBtn:'분석 받기 →',
-    gap:'차이', key:'핵심', outOf:'/ 20점',
+    gap:'차이', key:'핵심', outOf:'/ 100점',
+    detailToggle:'더 자세히 살펴보시겠어요?', simpleLabel:'간단히', detailedLabel:'자세히',
+    detailResetNote:'모드를 바꾸면 이 항목의 답변이 초기화됩니다.',
+    yes:'예', no:'아니요',
     loadingText:'답변을 분석하고 있습니다…', loadingNote:'보통 5~10초 정도 걸립니다',
     safetyTitle:'지금은 안전이 먼저입니다',
     safetyBody:'하나 이상의 답변에서 두려움, 강압, 또는 성적 압박의 패턴이 나타났습니다. 지금 가장 중요한 것은 안전을 확보하고 도움을 받는 것입니다.',
@@ -383,6 +403,8 @@ let S={
   screen:'intro', lang:'en', mode:null,
   names:{A:'',B:''},
   scores:{A:Array(10).fill(null),B:Array(10).fill(null)},
+  detailMode:{A:{},B:{}},
+  detailAnswers:{A:Array(10).fill(null),B:Array(10).fill(null)},
   partner:'A', qIdx:0, result:null, loading:false, error:null, hasSafety:false
 };
 
@@ -423,6 +445,23 @@ function updateName(partner,value){
 
 function setScore(v){const s=JSON.parse(JSON.stringify(S.scores));s[S.partner][S.qIdx]=v;set({scores:s});}
 
+function toggleDetailMode(partner,qIdx){
+  const newMode=!getDetailMode(partner,qIdx);
+  const dm=JSON.parse(JSON.stringify(S.detailMode));
+  if(!dm[partner])dm[partner]={};
+  dm[partner][qIdx]=newMode;
+  const sc=JSON.parse(JSON.stringify(S.scores));
+  sc[partner][qIdx]=null;
+  const da=JSON.parse(JSON.stringify(S.detailAnswers));
+  da[partner]=Array(10).fill(null);
+  set({detailMode:dm,scores:sc,detailAnswers:da});
+}
+function setDetailAnswer(partner,subIdx,val){
+  const da=JSON.parse(JSON.stringify(S.detailAnswers));
+  da[partner][subIdx]=val;
+  set({detailAnswers:da});
+}
+
 function goNext(){
   if(S.qIdx<9)set({qIdx:S.qIdx+1});
   else if(S.mode==='couple'&&S.partner==='A')set({partner:'B',qIdx:0});
@@ -443,10 +482,27 @@ function scoreBand(sc){
   if(hasFoundationZero(sc)) return{label:tr.bandFoundation,color:'#A85240',bg:'#FAE8E5'};
   const total=sc.reduce((a,b)=>a+(b??0),0);
   const bands=tr.scoreBands;
-  if(total>=17)return bands[0];
-  if(total>=13)return bands[1];
-  if(total>=9) return bands[2];
+  if(total>=85)return bands[0];
+  if(total>=65)return bands[1];
+  if(total>=45)return bands[2];
   return bands[3];
+}
+
+function getDetailMode(partner,qIdx){return !!(S.detailMode[partner]&&S.detailMode[partner][qIdx]);}
+function computedScores(partner){
+  return Q.map((q,i)=>{
+    if(i===1&&getDetailMode(partner,i)){
+      const ans=S.detailAnswers[partner];
+      if(ans.some(a=>a===null))return null;
+      return ans.reduce((a,b)=>a+b,0);
+    }
+    const raw=S.scores[partner][i];
+    return raw===null?null:raw*5;
+  });
+}
+function isDomainAnswered(partner,qIdx){
+  if(qIdx===1&&getDetailMode(partner,qIdx))return S.detailAnswers[partner].every(a=>a!==null);
+  return S.scores[partner][qIdx]!==null;
 }
 
 function refPills(keys){
@@ -479,20 +535,20 @@ function buildProfile(scA,scB,isCouple,lang){
     if(isCouple&&scB[i]===0&&!flags.find(f=>f.item.startsWith(`Item ${q.id}`)&&f.partner==='B'))addFlag(i,'B','zero');
   });
   if(isCouple)Q.forEach((q,i)=>{
-    if(scA[i]!==null&&scB[i]!==null&&Math.abs(scA[i]-scB[i])>=2)
+    if(scA[i]!==null&&scB[i]!==null&&Math.abs(scA[i]-scB[i])>=5)
       flags.push({item:`Item ${q.id}: ${lang==='ko'?q.ko.title:q.en.title}`,partner:'both',reason:'discrepancy',gap:scA[i]-scB[i]});
   });
   foundationIdx.forEach(i=>{
-    if(scA[i]===1&&(!isCouple||scB[i]===1))
+    if(scA[i]>=4&&scA[i]<=7&&(!isCouple||scB[i]>=4&&scB[i]<=7))
       flags.push({item:`Item ${Q[i].id}: ${lang==='ko'?Q[i].ko.title:Q[i].en.title}`,partner:'both',reason:'paired_one'});
   });
   Q.forEach((q,i)=>{
-    if(scA[i]===2&&(!isCouple||scB[i]===2))
+    if(scA[i]>=8&&(!isCouple||scB[i]>=8))
       strengths.push({item:`Item ${q.id}`,title:lang==='ko'?q.ko.title:q.en.title});
   });
   Q.forEach((q,i)=>{
     const aScore=scA[i],bScore=isCouple?scB[i]:null;
-    if(aScore===1||(isCouple&&bScore===1)){
+    if((aScore>=4&&aScore<=7)||(isCouple&&bScore>=4&&bScore<=7)){
       if(!flags.find(f=>f.item.startsWith(`Item ${q.id}`)))
         growth.push({item:`Item ${q.id}`,title:lang==='ko'?q.ko.title:q.en.title,priority:q.hw?1:0});
     }
@@ -505,33 +561,74 @@ async function analyze(){
   set({screen:'loading',loading:true,error:null});
   const nA=nOf('A'),nB=nOf('B');
   const isCouple=S.mode==='couple';
-  const safetyA=hasSafetyZero(S.scores.A);
-  const safetyB=isCouple&&hasSafetyZero(S.scores.B);
+  const safetyA=hasSafetyZero(computedScores('A'));
+  const safetyB=isCouple&&hasSafetyZero(computedScores('B'));
   const hasSafety=safetyA||safetyB;
   const tr=t();
   const langInst=tr.promptInstruction;
-  const profile=buildProfile(S.scores.A,S.scores.B,isCouple,S.lang);
+  const csA=computedScores('A'),csB=computedScores('B');
+  const profile=buildProfile(csA,csB,isCouple,S.lang);
+
+  // Build rich per-domain detail for each partner
+  const buildDomainDetail=(partner,cs)=>Q.map((q,i)=>{
+    const score=cs[i];
+    const ql=q[S.lang];
+    const isDetailedBigRocks=i===1&&getDetailMode(partner,1);
+    const entry={domain:`Item ${q.id}: ${ql.title}`,score:`${score??'—'}/10`};
+    if(isDetailedBigRocks){
+      const ans=S.detailAnswers[partner];
+      const nos=Q[1].detailed.map((sq,si)=>ans[si]===0?sq[S.lang]:null).filter(Boolean);
+      const yeses=Q[1].detailed.map((sq,si)=>ans[si]===1?sq[S.lang]:null).filter(Boolean);
+      if(nos.length)entry.unresolved=nos;
+      if(yeses.length)entry.confirmed=yeses;
+    } else if(score!==null){
+      const rawScore=S.scores[partner][i];
+      if(rawScore!==null&&ql.opts)entry.selectedAnswer=ql.opts[rawScore];
+    }
+    return entry;
+  });
+
   const profileJson=JSON.stringify({
     partnerA:nA,partnerB:isCouple?nB:null,mode:S.mode,
     totalA:profile.totalA,totalB:profile.totalB,
-    flags:profile.flags,strengths:profile.strengths,
-    growthAreas:profile.growth,hasSafetyConcern:hasSafety,
+    hasSafetyConcern:hasSafety,
+    domainsA:buildDomainDetail('A',csA),
+    ...(isCouple?{domainsB:buildDomainDetail('B',csB)}:{}),
   });
   const prompt=`${tr.promptRole}${langInst?' '+langInst:''}
 
-A couple/person completed a relationship readiness reflection. The following structured profile was computed deterministically from their scores. Your job is ONLY to rewrite this into warm, plain-language feedback. Do NOT add new claims, advice, or observations not already present in the profile below.
+A ${isCouple?'couple':'person'} completed a science-based relationship readiness assessment.
 
-Structured profile:
+RESPONSE DATA (scores out of 10, plus exact answers selected):
 ${profileJson}
 
-Return ONLY valid JSON, no markdown, no code fences:
-{"overview":"2-3 warm, honest sentences summarising the profile. ${hasSafety?'Open by naming the safety concern directly but warmly.':''}","flags":[{"item":"(use item title from profile, do not invent new ones)","concern":"1-2 warm sentences elaborating the flag already in the profile"}],"strengths":["1 warm sentence per strength item already listed in profile, using names"],"growthAreas":[{"area":"(use title from profile)","advice":"2-3 actionable sentences, not new topics"}]}
+YOUR TASK: Write personalised feedback. Each flag and growth area MUST include an "actions" array — a list of SHORT, SPECIFIC, DOABLE bullet points. Do NOT write long paragraphs in "concern" or "context". Keep those to 1 sentence max. Put all the substance in "actions".
 
-${langInst}
-IMPORTANT: Only elaborate on what is in the profile. Do not flag items not listed. Do not add strengths not listed. Keep flags in the same order as the profile (safety first). Warm, concrete, never preachy.`;
+GOOD example of an actions array:
+"actions": [
+  "Book a 1-hour conversation this week to discuss whether you both want children — decide on a date before leaving this app",
+  "Each write down your top 3 financial priorities independently, then compare lists side by side",
+  "Agree on a 20-minute cool-down rule: either partner can call a pause mid-argument, no questions asked"
+]
+
+BAD example (do NOT do this):
+"actions": []  ← never leave empty
+"context": "You need to have many conversations about various topics and work on communication and trust and also consider therapy." ← too vague, no bullets
+
+RULES:
+- actions: 2–4 bullets per flag/growth area, each starting with a verb, each ≤ 25 words
+- For Big Rocks "unresolved" items: write one bullet per unresolved topic naming it explicitly
+- For couple gaps: use both names (e.g. "${nA} rates this 3, ${isCouple?nB:'you'} rates it 8 — start by each writing down what you think the current reality looks like")
+- Never write "communicate more", "be honest", "seek help" as standalone bullets — always say HOW
+- ${hasSafety?'Safety concern: address this first, warm but direct.':'Do not invent safety concerns.'}
+
+Return ONLY valid JSON, no markdown fences:
+{"overview":"2-3 sentences, use names, reference actual scores","flags":[{"item":"domain name","concern":"1 sentence max","actions":["verb-led specific action","verb-led specific action"]}],"strengths":[{"title":"domain name","detail":"1-2 sentences using names and what they said"}],"growthAreas":[{"area":"domain name","context":"1 sentence max on what needs work","actions":["verb-led specific action","verb-led specific action","verb-led specific action"]}]}
+
+${langInst}`;
 
   try{
-    const res=await fetch('/api/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1400,messages:[{role:'user',content:prompt}]})});
+    const res=await fetch('/api/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:3200,messages:[{role:'user',content:prompt}]})});
     const data=await res.json();
     if(data.error)throw new Error(typeof data.error==='object'?data.error.message:data.error);
     const txt=data.content?.map(b=>b.text||'').join('')||'';
@@ -540,9 +637,12 @@ IMPORTANT: Only elaborate on what is in the profile. Do not flag items not liste
     catch{parsed={overview:txt.slice(0,300),flags:[],strengths:[],growthAreas:[]};}
     const safe={
       overview:typeof parsed.overview==='string'?parsed.overview:'',
-      flags:Array.isArray(parsed.flags)?parsed.flags.filter(f=>f&&typeof f.item==='string'&&typeof f.concern==='string'):[],
-      strengths:Array.isArray(parsed.strengths)?parsed.strengths.filter(s=>typeof s==='string'):[],
-      growthAreas:Array.isArray(parsed.growthAreas)?parsed.growthAreas.filter(g=>g&&typeof g.area==='string'&&typeof g.advice==='string'):[],
+      flags:Array.isArray(parsed.flags)?parsed.flags.filter(f=>f&&typeof f.item==='string')
+        .map(f=>({item:f.item,concern:f.concern||'',actions:Array.isArray(f.actions)?f.actions.filter(a=>typeof a==='string'):[]})):[],
+      strengths:Array.isArray(parsed.strengths)?parsed.strengths.filter(s=>s&&(typeof s==='string'||typeof s.title==='string'))
+        .map(s=>typeof s==='string'?{title:'',detail:s}:{title:s.title||'',detail:s.detail||''}):[],
+      growthAreas:Array.isArray(parsed.growthAreas)?parsed.growthAreas.filter(g=>g&&typeof g.area==='string')
+        .map(g=>({area:g.area,context:g.context||g.advice||'',actions:Array.isArray(g.actions)?g.actions.filter(a=>typeof a==='string'):[]})):[],
     };
     set({result:safe,screen:'results',loading:false,hasSafety});
   }catch(e){set({error:(S.lang==='ko'?'분석 실패: ':'Analysis failed: ')+(e.message||'Please try again.'),screen:'review',loading:false});}
@@ -550,7 +650,8 @@ IMPORTANT: Only elaborate on what is in the profile. Do not flag items not liste
 
 function badge(v){
   if(v===null)return`<div class="score-badge" style="background:#f0ebe4;border:1.5px solid #dfd6cc;color:#bbb">—</div>`;
-  return`<div class="score-badge ${SC[v].cls}">${v}</div>`;
+  const cls=v>=8?'b2':v>=4?'b1':'b0';
+  return`<div class="score-badge ${cls}">${v}</div>`;
 }
 
 function acc(id,labelKey,content){
@@ -670,6 +771,7 @@ function render(){
     const pName=nOf(partner);
     const ql=Q[qIdx][lang];
     const cur=scores[partner][qIdx];
+    const isDetailMode=qIdx===1&&getDetailMode(partner,qIdx);
     const isLast=qIdx===9&&(partner==='B'||!isCouple);
     const nextLabel=qIdx===9&&partner==='A'&&isCouple?abbr(nOf('B'))+tr.partnerBTurn:isLast?tr.reviewBtn:tr.nextBtn;
     html=`<div class="screen ${tr.langClass}" style="padding-top:44px">
@@ -688,23 +790,42 @@ function render(){
         <div style="font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:.08em;color:#B4ADA6;margin-bottom:6px">${tr.sourcesLabel}</div>
         ${refPills(Q[qIdx].refs)}
       </div>
-      ${[2,1,0].map(v=>`<div class="score-opt${cur===v?' '+SC[v].selCls:''}" onclick="setScore(${v})">
+      ${qIdx===1?`<div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;padding:12px 14px;background:#EEE9E3;border-radius:10px">
+        <div style="font-size:13px;color:#6B645C;flex:1">${tr.detailToggle}</div>
+        <div class="lang-toggle">
+          <button class="lang-btn${!isDetailMode?' active':''}" onclick="toggleDetailMode('${partner}',1)">${tr.simpleLabel}</button>
+          <button class="lang-btn${isDetailMode?' active':''}" onclick="toggleDetailMode('${partner}',1)">${tr.detailedLabel}</button>
+        </div>
+      </div>`:''}
+      ${isDetailMode?Q[1].detailed.map((sq,si)=>{
+        const ans=S.detailAnswers[partner][si];
+        return`<div style="border:1.5px solid ${ans===1?'#3D6E50':ans===0?'#A85240':'#DFD6CC'};border-radius:10px;padding:14px 16px;margin-bottom:10px;background:${ans===1?'#EAF3EC':ans===0?'#FAE8E5':'#fff'}">
+          <div style="font-size:13px;font-weight:500;color:#6B645C;margin-bottom:4px">${si+1} / 10</div>
+          <div style="font-size:14px;color:#1B1714;line-height:1.65;margin-bottom:10px">${esc(sq[lang])}</div>
+          <div style="margin-bottom:10px">${refPills(sq.refs)}</div>
+          <div style="display:flex;gap:8px">
+            <button class="btn-ghost" style="${ans===1?'background:#3D6E50;color:#fff;border-color:#3D6E50':''}" onclick="setDetailAnswer('${partner}',${si},1)">${tr.yes}</button>
+            <button class="btn-ghost" style="${ans===0?'background:#A85240;color:#fff;border-color:#A85240':''}" onclick="setDetailAnswer('${partner}',${si},0)">${tr.no}</button>
+          </div>
+        </div>`;
+      }).join(''):[2,1,0].map(v=>`<div class="score-opt${cur===v?' '+SC[v].selCls:''}" onclick="setScore(${v})">
         <div class="score-num">${v}</div>
         <div><div class="score-label">${tr.scoreLabels[v]}</div><div class="score-text">${ql.opts[v]}</div></div>
       </div>`).join('')}
       <div class="nav-row" style="margin-top:20px">
         <button class="btn-ghost" onclick="goPrev()">${tr.backBtn}</button>
-        <button class="btn-primary" onclick="goNext()" ${cur===null?'disabled':''}>${nextLabel}</button>
+        <button class="btn-primary" onclick="goNext()" ${!isDomainAnswered(partner,qIdx)?'disabled':''}>${nextLabel}</button>
       </div>
     </div>`;
   }
 
   else if(screen==='review'){
     const nA=nOf('A'),nB=nOf('B');
-    const tA=scores.A.reduce((a,b)=>a+(b??0),0);
-    const tB=scores.B.reduce((a,b)=>a+(b??0),0);
-    const bandA=scoreBand(scores.A);
-    const bandB=isCouple?scoreBand(scores.B):null;
+    const csA=computedScores('A'),csB=computedScores('B');
+    const tA=csA.reduce((a,b)=>a+(b??0),0);
+    const tB=csB.reduce((a,b)=>a+(b??0),0);
+    const bandA=scoreBand(csA);
+    const bandB=isCouple?scoreBand(csB):null;
     const cols=isCouple?'1fr 68px 68px':'1fr 80px';
     html=`<div class="screen ${tr.langClass}" style="padding-top:44px">
       <div style="font-size:11px;letter-spacing:.12em;color:#6B645C;text-transform:uppercase;margin-bottom:10px">${tr.reviewTitle}</div>
@@ -718,8 +839,8 @@ function render(){
           ${isCouple?`<div style="text-align:center;color:${PC.B}">${esc(abbr(nB))}</div>`:''}
         </div>
         ${Q.map((q,i)=>{
-          const sA=scores.A[i],sB=scores.B[i];
-          const disc=isCouple&&sA!==null&&sB!==null&&Math.abs(sA-sB)>=2;
+          const sA=csA[i],sB=csB[i];
+          const disc=isCouple&&sA!==null&&sB!==null&&Math.abs(sA-sB)>=5;
           const ql=q[lang];
           return`<div style="display:grid;grid-template-columns:${cols}" class="review-row">
             <div class="review-cell"><span style="color:#6B645C;font-size:12px;margin-right:6px">${q.id}.</span>${esc(ql.title)}${disc?`<span style="font-size:10px;background:#FAE8E5;color:#A85240;padding:1px 5px;border-radius:3px;margin-left:5px">${tr.gap}</span>`:''}</div>
@@ -763,10 +884,11 @@ function render(){
 
   else if(screen==='results'&&result){
     const {overview,flags,strengths,growthAreas}=result;
-    const tA=scores.A.reduce((a,b)=>a+(b??0),0);
-    const tB=scores.B.reduce((a,b)=>a+(b??0),0);
-    const bandA=scoreBand(scores.A);
-    const bandB=isCouple?scoreBand(scores.B):null;
+    const csA=computedScores('A'),csB=computedScores('B');
+    const tA=csA.reduce((a,b)=>a+(b??0),0);
+    const tB=csB.reduce((a,b)=>a+(b??0),0);
+    const bandA=scoreBand(csA);
+    const bandB=isCouple?scoreBand(csB):null;
     html=`<div class="screen ${tr.langClass}" style="padding-top:44px">
       <div style="font-size:11px;letter-spacing:.12em;color:#6B645C;text-transform:uppercase;margin-bottom:10px">${tr.analysisTag}</div>
       <h2 class="serif" style="font-size:36px;font-weight:400;color:#1B1714;margin-bottom:22px;font-style:italic">${tr.analysisTitle}</h2>
@@ -775,12 +897,12 @@ function render(){
       <div style="display:grid;grid-template-columns:${isCouple?'1fr 1fr':'1fr'};gap:10px;margin-bottom:22px">
         <div style="background:${bandA.bg};border-radius:10px;padding:14px 16px;text-align:center">
           <div style="font-size:12px;color:#6B645C;margin-bottom:4px">${esc(nOf('A'))}</div>
-          <div class="serif" style="font-size:38px;font-weight:500;color:${bandA.color};line-height:1;margin-bottom:5px">${tA}<span style="font-size:18px;color:#aaa"> / 20</span></div>
+          <div class="serif" style="font-size:38px;font-weight:500;color:${bandA.color};line-height:1;margin-bottom:5px">${tA}<span style="font-size:18px;color:#aaa"> / 100</span></div>
           <div style="font-size:12px;color:${bandA.color}">${esc(bandA.label)}</div>
         </div>
         ${isCouple&&bandB?`<div style="background:${bandB.bg};border-radius:10px;padding:14px 16px;text-align:center">
           <div style="font-size:12px;color:#6B645C;margin-bottom:4px">${esc(nOf('B'))}</div>
-          <div class="serif" style="font-size:38px;font-weight:500;color:${bandB.color};line-height:1;margin-bottom:5px">${tB}<span style="font-size:18px;color:#aaa"> / 20</span></div>
+          <div class="serif" style="font-size:38px;font-weight:500;color:${bandB.color};line-height:1;margin-bottom:5px">${tB}<span style="font-size:18px;color:#aaa"> / 100</span></div>
           <div style="font-size:12px;color:${bandB.color}">${esc(bandB.label)}</div>
         </div>`:''}
       </div>
@@ -807,7 +929,13 @@ function render(){
         <div class="section-title" style="color:#A85240"><span>⚠</span>${tr.flagsTitle}</div>
         ${flags.map(f=>`<div class="result-item">
           <div class="result-bullet" style="background:#FAD4CD;color:#A85240">!</div>
-          <div><div class="result-item-title" style="color:#A85240">${esc(f.item)}</div><div class="result-item-body">${esc(f.concern)}</div></div>
+          <div style="flex:1">
+            <div class="result-item-title" style="color:#A85240">${esc(f.item)}</div>
+            ${f.concern?`<div class="result-item-body" style="margin-bottom:${f.actions&&f.actions.length?'10px':'0'}">${esc(f.concern)}</div>`:''}
+            ${f.actions&&f.actions.length?`<ul style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:6px">
+              ${f.actions.map(a=>`<li style="display:flex;gap:8px;align-items:flex-start"><span style="color:#A85240;font-weight:600;flex-shrink:0;margin-top:1px">→</span><span style="font-size:13px;color:#7A3428;line-height:1.6">${esc(a)}</span></li>`).join('')}
+            </ul>`:''}
+          </div>
         </div>`).join('')}
       </div>`:''}
 
@@ -816,7 +944,10 @@ function render(){
         <div class="section-title" style="color:#3D6E50"><span>✓</span>${tr.strengthsTitle}</div>
         ${strengths.map(s=>`<div class="result-item">
           <div class="result-bullet" style="background:#C4E2CB;color:#3D6E50">✓</div>
-          <div class="result-item-body" style="padding-top:2px">${esc(s)}</div>
+          <div>
+            ${s.title?`<div class="result-item-title" style="color:#3D6E50">${esc(s.title)}</div>`:''}
+            <div class="result-item-body" style="padding-top:${s.title?'2px':'0'}">${esc(s.detail)}</div>
+          </div>
         </div>`).join('')}
       </div>`:''}
 
@@ -825,7 +956,13 @@ function render(){
         <div class="section-title" style="color:#7C5E1A"><span>→</span>${tr.growthTitle}</div>
         ${growthAreas.map(g=>`<div class="result-item">
           <div class="result-bullet" style="background:#F0DCA8;color:#7C5E1A">→</div>
-          <div><div class="result-item-title" style="color:#7C5E1A">${esc(g.area)}</div><div class="result-item-body">${esc(g.advice)}</div></div>
+          <div style="flex:1">
+            <div class="result-item-title" style="color:#7C5E1A">${esc(g.area)}</div>
+            ${g.context?`<div class="result-item-body" style="margin-bottom:${g.actions&&g.actions.length?'10px':'0'}">${esc(g.context)}</div>`:''}
+            ${g.actions&&g.actions.length?`<ul style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:6px">
+              ${g.actions.map(a=>`<li style="display:flex;gap:8px;align-items:flex-start"><span style="color:#8B6A1A;font-weight:600;flex-shrink:0;margin-top:1px">→</span><span style="font-size:13px;color:#5C4010;line-height:1.6">${esc(a)}</span></li>`).join('')}
+            </ul>`:''}
+          </div>
         </div>`).join('')}
       </div>`:''}
 
@@ -842,7 +979,7 @@ function render(){
 }
 
 function restart(){
-  set({screen:'intro',mode:null,names:{A:'',B:''},scores:{A:Array(10).fill(null),B:Array(10).fill(null)},partner:'A',qIdx:0,result:null,loading:false,error:null,hasSafety:false});
+  set({screen:'intro',mode:null,names:{A:'',B:''},scores:{A:Array(10).fill(null),B:Array(10).fill(null)},detailMode:{A:{},B:{}},detailAnswers:{A:Array(10).fill(null),B:Array(10).fill(null)},partner:'A',qIdx:0,result:null,loading:false,error:null,hasSafety:false});
 }
 
 render();
